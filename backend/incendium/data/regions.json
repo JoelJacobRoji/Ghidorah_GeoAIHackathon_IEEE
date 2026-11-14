@@ -1,0 +1,40 @@
+{
+  "detection_window": {
+    "id": "india",
+    "name": "India monitoring window",
+    "bbox": [68.0, 6.0, 97.5, 37.5],
+    "note": "Satellite detections are requested for this rectangular bounding box. It also covers parts of neighbouring countries; detections are tagged with an Indian state only when they fall inside a Natural Earth state polygon."
+  },
+  "regions": [
+    {
+      "id": "karnataka",
+      "name": "Karnataka",
+      "state_code": "IN-KA",
+      "grid_deg": 0.25,
+      "min_cell_overlap": 0.2,
+      "timezone": "Asia/Kolkata",
+      "center": [76.2, 14.8],
+      "zoom": 6.2
+    },
+    {
+      "id": "uttarakhand",
+      "name": "Uttarakhand",
+      "state_code": "IN-UT",
+      "grid_deg": 0.25,
+      "min_cell_overlap": 0.2,
+      "timezone": "Asia/Kolkata",
+      "center": [79.2, 30.1],
+      "zoom": 7.0
+    },
+    {
+      "id": "odisha",
+      "name": "Odisha",
+      "state_code": "IN-OR",
+      "grid_deg": 0.25,
+      "min_cell_overlap": 0.2,
+      "timezone": "Asia/Kolkata",
+      "center": [84.4, 20.5],
+      "zoom": 6.5
+    }
+  ]
+}

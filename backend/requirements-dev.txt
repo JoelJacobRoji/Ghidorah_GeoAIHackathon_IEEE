@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest>=8
+respx>=0.21
+# Reference implementation used ONLY in tests to cross-check our FWI equations.
+xclim>=0.50

@@ -1,0 +1,210 @@
+@import 'tailwindcss';
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+/* ---------------------------------------------------------------------------
+   Incendium design tokens — mid-tone "field atlas" palette.
+   Fire orange is reserved for satellite detections; danger classes use a
+   separate straw → ochre → oxblood ramp so the two never read as the same.
+--------------------------------------------------------------------------- */
+@theme {
+  --font-display: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --color-graphite-950: #1c2426;
+  --color-graphite-900: #232d30;
+  --color-graphite-800: #2b3639;
+  --color-graphite-700: #36454a;
+  --color-graphite-600: #475a5f;
+  --color-graphite-500: #5c6f73;
+
+  --color-forest-700: #3f5547;
+  --color-forest-600: #4b6455;
+  --color-forest-500: #526c5b;
+  --color-sage-400: #8d9e8c;
+  --color-sage-300: #9aaa98;
+  --color-sage-200: #b8c4b5;
+
+  --color-stone-300: #c7c1b2;
+  --color-stone-200: #d4cfc2;
+  --color-stone-100: #e1ddd1;
+  --color-ivory: #e8e5db;
+  --color-ivory-50: #f3f1ea;
+
+  --color-incendium: #e77943;
+  --color-incendium-600: #d6652f;
+  --color-incendium-300: #f2a57d;
+  --color-burnt: #c54f42;
+
+  /* FWI classes: green (low) -> dark red (extreme), OKLCH ramp with falling lightness */
+  --color-risk-low: #49a550;
+  --color-risk-moderate: #857c00;
+  --color-risk-high: #975000;
+  --color-risk-veryhigh: #952500;
+  --color-risk-extreme: #7c0206;
+  --color-risk-veryextreme: #550513;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+:root {
+  color-scheme: light;
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 600ms;
+  font-family: var(--font-sans);
+  background: var(--color-graphite-800);
+  color: var(--color-ivory);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-graphite-800);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-incendium) 45%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-incendium-300);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Floating instrument panels: warm stone, slight translucency, hairline edge. */
+.panel {
+  background: color-mix(in oklab, var(--color-stone-100) 93%, transparent);
+  color: var(--color-graphite-900);
+  border: 1px solid color-mix(in oklab, var(--color-graphite-900) 12%, transparent);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 18px 40px -18px rgba(18, 26, 28, 0.55),
+    0 2px 6px -2px rgba(18, 26, 28, 0.25);
+  backdrop-filter: blur(10px) saturate(1.05);
+}
+
+.panel-dark {
+  background: color-mix(in oklab, var(--color-graphite-900) 88%, transparent);
+  color: var(--color-ivory);
+  border: 1px solid rgba(232, 229, 219, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hairline {
+  border-color: color-mix(in oklab, currentColor 14%, transparent);
+}
+
+/* Subtle paper grain for the landing atmosphere (pure CSS, no image). */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.5) 0.5px, transparent 0.6px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+}
+
+/* MapLibre chrome restyled to the palette */
+.maplibregl-ctrl-attrib {
+  background: color-mix(in oklab, var(--color-stone-100) 85%, transparent) !important;
+  color: var(--color-graphite-800) !important;
+  font-size: 10.5px !important;
+  border-radius: 8px 0 0 0;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--color-graphite-800) !important;
+}
+.maplibregl-popup-content {
+  background: var(--color-stone-100);
+  color: var(--color-graphite-900);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-family: var(--font-sans);
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5);
+}
+.maplibregl-popup-tip {
+  border-top-color: var(--color-stone-100) !important;
+  border-bottom-color: var(--color-stone-100) !important;
+}
+
+/* Scrollbars */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, currentColor 25%, transparent) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes incendium-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: incendium-pulse 2.4s var(--ease-out-expo) infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.12) 50%, rgba(0, 0, 0, 0.06) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+  border-radius: 6px;
+}
