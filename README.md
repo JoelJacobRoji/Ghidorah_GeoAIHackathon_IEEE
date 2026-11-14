@@ -21,6 +21,12 @@ The project was renamed from EMBER to Incendium; old `EMBER_*` environment varia
 
 It is a research prototype, not an official warning service. Detections are heat signals, not confirmed fires, and risk indicators describe conditions; they do not predict ignitions.
 
+## Live demo
+
+**https://162.35.42.114**
+
+The app is hosted on a VPS and reached directly by its IP address over HTTPS. Plain `http://` redirects to HTTPS automatically.
+
 ---
 
 ## 1. Architecture
