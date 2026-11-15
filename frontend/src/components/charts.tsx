@@ -1,5 +1,5 @@
 import { Table2, LineChart as LineIcon } from 'lucide-react'
-import { useId, useState, type ReactNode } from 'react'
+import { useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import {
   Bar,
   BarChart,
@@ -154,23 +154,41 @@ export function FwiTrend({ series, selectedDate, height = 170, classes = FWI_CLA
 }
 
 // --------------------------------------------------------------------------- factor contributions
+/** One bar segment. Its label is shown only when it fits inside the segment's current
+ *  width (measured, so it adapts to the panel size); otherwise the segment stays
+ *  unlabelled and the factor remains in the tooltip and the bar's accessible name. */
+function FactorSegment({ f }: { f: Factor }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [fits, setFits] = useState(true)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const check = () => setFits(el.scrollWidth <= el.clientWidth)
+    check()
+    if (typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [f.contribution])
+  return (
+    <div
+      ref={ref}
+      className="flex min-w-0 items-center justify-center overflow-hidden whitespace-nowrap px-1 text-[10.5px] font-semibold transition-[width] duration-500"
+      style={{ width: `${f.contribution}%`, background: FACTOR_COLORS[f.key], color: textOn(FACTOR_COLORS[f.key]) }}
+      title={`${f.label}: ${f.contribution} pts (score ${f.score} × weight ${f.weight})`}
+    >
+      {/* Kept in the layout while hidden, so the fit can be re-measured when the width changes. */}
+      <span className={fits ? '' : 'invisible'}>{FACTOR_META[f.key].short}</span>
+    </div>
+  )
+}
+
 export function FactorBar({ factors, score }: { factors: Factor[]; score: number | null }) {
   const present = factors.filter((f) => f.contribution !== null)
   return (
     <div>
       <div className="flex h-7 w-full gap-[2px] overflow-hidden rounded-[4px] bg-graphite-900/8" role="img" aria-label={`Composite ${score ?? 'not available'}: ${present.map((f) => `${f.label} ${f.contribution}`).join(', ')}`}>
-        {present.map((f) =>
-          (f.contribution ?? 0) > 0 ? (
-            <div
-              key={f.key}
-              className="flex items-center justify-center text-[10.5px] font-semibold transition-[width] duration-500"
-              style={{ width: `${f.contribution}%`, background: FACTOR_COLORS[f.key], color: textOn(FACTOR_COLORS[f.key]) }}
-              title={`${f.label}: ${f.contribution} pts (score ${f.score} × weight ${f.weight})`}
-            >
-              {(f.contribution ?? 0) >= 6 ? FACTOR_META[f.key].short : ''}
-            </div>
-          ) : null,
-        )}
+        {present.map((f) => ((f.contribution ?? 0) > 0 ? <FactorSegment key={f.key} f={f} /> : null))}
       </div>
       <div className="mt-1 flex justify-between font-mono text-[10px] text-graphite-500">
         <span>0</span>
@@ -179,6 +197,15 @@ export function FactorBar({ factors, score }: { factors: Factor[]; score: number
         <span>75</span>
         <span>100</span>
       </div>
+      {/* Key: identifies every segment, including narrow ones whose label is hidden (no hover on touch screens). */}
+      <ul className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-graphite-700" aria-hidden>
+        {present.map((f) => (
+          <li key={f.key} className="flex items-center gap-1">
+            <span className="size-2 rounded-[2px]" style={{ background: FACTOR_COLORS[f.key] }} />
+            {FACTOR_META[f.key].short} <span className="font-mono tabular text-graphite-500">{num(f.contribution, 1)}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
