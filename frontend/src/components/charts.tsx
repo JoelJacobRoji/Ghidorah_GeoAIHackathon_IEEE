@@ -89,7 +89,7 @@ function TipBox({ children }: { children: ReactNode }) {
 const shortDate = (d: string) => d.slice(5).replace('-', '/')
 
 // --------------------------------------------------------------------------- FWI trend
-export function FwiTrend({ series, selectedDate, height = 170, classes = FWI_CLASSES }: { series: FwiRow[]; selectedDate?: string | null; height?: number; classes?: { name: string; min: number; color: string }[] }) {
+export function FwiTrend({ series, selectedDate, height = 170, classes = FWI_CLASSES, calibrated = false }: { series: FwiRow[]; selectedDate?: string | null; height?: number; classes?: { name: string; min: number; color: string }[]; calibrated?: boolean }) {
   const reduce = useReducedMotion()
   const rows = series.map((r) => ({
     date: r.date,
@@ -107,7 +107,7 @@ export function FwiTrend({ series, selectedDate, height = 170, classes = FWI_CLA
   return (
     <ChartFrame
       title="Fire Weather Index"
-      subtitle="Daily, from model weather at local noon. Dashed = forecast. Reference lines = prototype class thresholds."
+      subtitle={`Daily, from model weather at local noon. Dashed = forecast. Reference lines = ${calibrated ? 'calibrated' : 'prototype'} class thresholds.`}
       table={{
         columns: ['Date', 'FWI', 'Class', 'Kind'],
         rows: series.map((r) => [r.date, num(r.fwi, 1), r.fwi_class ?? '—', r.is_forecast ? 'forecast' : 'model analysis']),

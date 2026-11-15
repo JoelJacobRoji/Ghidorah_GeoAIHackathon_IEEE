@@ -210,7 +210,7 @@ function CellAnalysis({ cellId, date }: { cellId: string; date: string }) {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <Card>
-          <FwiTrend series={data.fwi_series} selectedDate={data.date} classes={fwiScheme.classes} />
+          <FwiTrend series={data.fwi_series} selectedDate={data.date} classes={fwiScheme.classes} calibrated={fwiScheme.calibrated} />
           <div className="mt-3 grid grid-cols-5 gap-2 border-t border-graphite-900/10 pt-3">
             {(['ffmc', 'dmc', 'dc', 'isi', 'bui'] as const).map((k) => (
               <Metric key={k} label={k.toUpperCase()} value={num(data.fwi?.[k] as number | null, k === 'isi' ? 1 : 0)} hint={data.percentiles?.[k] !== undefined ? `p${Math.round(data.percentiles[k])} in region` : undefined} />

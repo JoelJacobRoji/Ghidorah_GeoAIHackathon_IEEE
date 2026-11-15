@@ -186,8 +186,23 @@ export default function Dashboard() {
   const activeDate = risk.data?.meta.date ?? null
   const webgl = useMemo(() => hasWebGL(), [])
 
+  // The top bar wraps to a second row when the window is not wide enough. On desktop
+  // the side panels start just below its real height, so they never cover its controls.
+  const topBarRef = useRef<HTMLDivElement>(null)
+  const [panelTop, setPanelTop] = useState(78)
+  useEffect(() => {
+    const el = topBarRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    // offsetHeight includes the bar's 16 px bottom padding; leave a 12 px gap below the controls.
+    const update = () => setPanelTop(Math.max(78, el.offsetHeight - 4))
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-[#c9c4b5]">
+    <div className="relative h-dvh w-full overflow-hidden bg-[#c9c4b5]" style={{ '--panel-top': `${panelTop}px` } as React.CSSProperties}>
       {webgl ? (
         <Suspense fallback={<div className="absolute inset-0 grid place-items-center text-graphite-600">Loading map…</div>}>
           <MapView
@@ -218,7 +233,7 @@ export default function Dashboard() {
       )}
 
       {/* ---------------------------------------------------------- top bar */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-start gap-2 p-3 md:p-4">
+      <div ref={topBarRef} className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-start gap-2 p-3 md:p-4">
         <NavBar variant="overlay" />
         <div className="pointer-events-auto order-3 flex w-full items-center gap-2 md:order-none md:w-auto">
           <RegionSelect regions={regions.data} value={regionId} onChange={(id) => { setParams({ region: id }); setDate(null); setCell(null) }} />
@@ -245,7 +260,7 @@ export default function Dashboard() {
       </div>
 
       {/* ---------------------------------------------------------- layers panel */}
-      <div className="pointer-events-none absolute bottom-[132px] left-3 z-20 flex flex-col-reverse md:bottom-auto md:left-4 md:top-[78px] md:flex-col">
+      <div className="pointer-events-none absolute bottom-[132px] left-3 z-20 flex flex-col-reverse md:bottom-auto md:left-4 md:top-[var(--panel-top)] md:flex-col">
         <button
           type="button"
           onClick={() => setLayersOpen((o) => !o)}
@@ -262,7 +277,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: MOTION.base, ease: MOTION.ease }}
-              className="panel scroll-thin pointer-events-auto mb-2 max-h-[58dvh] w-[min(280px,calc(100vw-24px))] space-y-4 overflow-y-auto p-3.5 text-graphite-900 md:mb-0 md:mt-2 md:max-h-[calc(100dvh-260px)]"
+              className="panel scroll-thin pointer-events-auto mb-2 max-h-[58dvh] w-[min(280px,calc(100vw-24px))] space-y-4 overflow-y-auto p-3.5 text-graphite-900 md:mb-0 md:mt-2 md:max-h-[calc(100dvh-var(--panel-top)-182px)]"
             >
               <fieldset>
                 <legend className="eyebrow text-graphite-500">Risk surface</legend>
@@ -326,7 +341,7 @@ export default function Dashboard() {
       </div>
 
       {/* ---------------------------------------------------------- detail panel */}
-      <div className="pointer-events-none absolute bottom-3 right-3 top-[38dvh] z-30 flex w-[calc(100vw-24px)] flex-col md:bottom-[120px] md:right-4 md:top-[78px] md:w-[min(380px,calc(100vw-24px))]">
+      <div className="pointer-events-none absolute bottom-3 right-3 top-[38dvh] z-30 flex w-[calc(100vw-24px)] flex-col md:bottom-[120px] md:right-4 md:top-[var(--panel-top)] md:w-[min(380px,calc(100vw-24px))]">
         <AnimatePresence mode="wait">
           {tool === 'spread' && (
             <div key="tool-spread" className="pointer-events-auto flex max-h-full min-h-0 flex-col">
