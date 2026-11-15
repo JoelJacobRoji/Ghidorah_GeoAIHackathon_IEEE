@@ -145,14 +145,23 @@ def methodology(weights: dict[str, float], regions: list[str] | None = None) -> 
             "Satellite detections are thermal anomalies, not confirmed wildfires. They include agricultural burning, industrial heat sources and other hot surfaces.",
             "Detections can be missed under cloud or smoke, between overpasses, or for fires smaller or cooler than the sensor can resolve.",
             "Weather values are model estimates at ~9–25 km resolution, not measurements at a specific site; local terrain and microclimate effects are not resolved.",
-            "The FWI system was developed for Canadian forest fuels; Indian deciduous forests and grasslands behave differently. Thresholds are uncalibrated for India.",
+            "The FWI system was developed for Canadian forest fuels; Indian deciduous forests and grasslands behave differently. Karnataka's class thresholds are calibrated on one reference season (Feb–May 2025, ERA5-driven FWI); other regions use uncalibrated EFFIS thresholds. The live app uses forecast-model weather, whose FWI distribution may differ somewhat from ERA5.",
+            "Against 2026 detections, the calibrated FWI classes rise from Low to Extreme but are not strictly monotonic: the 'Very Extreme' class has a lower detection rate than 'Extreme', as late-season extremes coincide with declining burning.",
+            "The detection-likelihood model predicts satellite-detected burning (including crop fires), not wildfire ignition. Its two most important inputs are day of year and the cell's fire history, so much of its skill is knowing when and where burning usually happens. It was trained on February–May only; scores outside that window are flagged as out of season.",
             "NDVI measures greenness, not dryness. NDMI is a better (still indirect) proxy for vegetation water content. Neither measures dead fuel moisture directly.",
             "Sentinel-2 values are composites over 10-day intervals and may be stale or missing under persistent cloud.",
             "Risk indicators describe fire-weather and fuel conditions. They do not predict where or whether a fire will start.",
         ],
         "validation": {
             "software": "Automated tests cover parsing, validation, unit handling, deduplication, normalisation boundaries and FWI equations (cross-checked against the xclim reference implementation).",
-            "scientific": "No predictive accuracy is claimed. A retrospective comparison (below) reports how often VIIRS detected thermal anomalies on cell-days in each FWI and composite class over a past fire season, with confidence intervals, AUC with a cell-level bootstrap, a month-stratified AUC that removes seasonal co-variation, and composite weight sensitivity. This is a descriptive association, not a validation of predictive skill.",
+            "scientific": (
+                "A retrospective comparison (below) reports how often VIIRS detected thermal anomalies on cell-days in each FWI and composite class over a past fire season, with confidence intervals, AUC with a cell-level bootstrap, a month-stratified AUC that removes seasonal co-variation, and composite weight sensitivity. "
+                "For the rule-based indicators this is a descriptive association, not a validation of predictive skill. "
+                "Two results are genuinely out-of-sample, because they were fixed on Feb–May 2025 and tested once on Feb–May 2026 in Karnataka. "
+                "The calibrated FWI classes separate detection rates from 8.7% (Low) to 51% (Extreme) against a 35.6% base rate; at calibrated 'High' or above they catch 73% of detection cell-days while flagging 57% of cell-days. "
+                "The detection-likelihood model (gradient-boosted trees) reaches AUC 0.806 (95% CI 0.792–0.818; 0.761 within month) against 0.655 for FWI alone and 0.705 for fire history alone, with a Brier skill of 0.26 over climatology. "
+                "Neither result is a claim of ignition prediction."
+            ),
         },
     }
 

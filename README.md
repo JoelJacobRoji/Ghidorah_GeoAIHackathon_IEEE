@@ -155,6 +155,7 @@ Suomi NPP stopped producing data on 2 November 2026 (FIRMS FAQ), so it is delibe
 - Day-length factors follow GFWED (bands at ±15°/±30°); Karnataka straddles 15° N.
 - **Classes.** A region with a calibration in `backend/incendium/data/fwi_calibration.json` uses its own thresholds; otherwise the EFFIS thresholds apply (Low < 11.2 < Moderate < 21.3 < High < 38 < Very High < 50 < Extreme < 70 < Very Extreme), labelled **prototype, not calibrated for India**.
 - **Calibration method** (`python -m incendium calibrate-fwi`), fixed before any reference-season data was examined: class boundaries at the 25th, 50th, 75th, 90th and 97th percentiles of the pooled daily FWI over every cell-day of one reference fire season (Feb–May, ERA5 inputs). Only FWI values are used, never detections. Detections are used afterwards, on a different season, to test the classes. Classes are therefore relative to the region's own fire season: "Very Extreme" means FWI in the top 3 % of reference-season cell-days, not an absolute danger level.
+- **Karnataka thresholds** (reference season Feb–May 2025, 33 840 cell-days over 282 cells): Low < 14.18 ≤ Moderate < 34.06 ≤ High < 42.47 ≤ Very High < 50.40 ≤ Extreme < 57.78 ≤ Very Extreme. These are much higher than EFFIS, because Karnataka's dry season routinely produces FWI values that EFFIS would call Very High.
 
 **Experimental composite.** `R = 0.25T + 0.25H + 0.20W + 0.15D + 0.15V`. Each factor is normalised linearly and clipped:
 
@@ -235,6 +236,49 @@ This is a descriptive association, not a test of predictive skill (see the limit
 - **What it predicts:** satellite-detected burning, including crop fires. It does not predict wildfire ignition.
 - **Out of season:** live scores outside February–May are flagged as outside the training range.
 
+### Results: Karnataka, trained or calibrated on 2025, tested on 2026
+
+The unit is one 0.25° cell on one local day, and the event is "VIIRS detected at least one thermal anomaly in the cell that day". About 35 % of cell-days have one: the base rate is 34.7 % in 2025 and 35.6 % in 2026. 95 % intervals come from a cell-cluster bootstrap for AUCs and Wilson intervals for rates. Full reports are in `docs/VALIDATION-karnataka-2025.md`, `docs/VALIDATION-karnataka-2026.md` and on the Methodology page.
+
+**Calibrated FWI classes, out-of-sample on 2026:**
+
+| Class | Share of cell-days | Detection rate (95 % CI) | Lift vs base rate |
+|---|---|---|---|
+| Low | 9.8 % | 8.7 % (7.8–9.7) | 0.24 |
+| Moderate | 32.7 % | 27.1 % (26.2–27.9) | 0.76 |
+| High | 30.2 % | 42.7 % (41.7–43.7) | 1.20 |
+| Very High | 18.3 % | 47.7 % (46.4–48.9) | 1.34 |
+| Extreme | 6.4 % | 51.1 % (49.0–53.2) | 1.44 |
+| Very Extreme | 2.5 % | 39.3 % (36.0–42.6) | 1.10 |
+
+- Detection rates climb steadily from Low to Extreme, but not strictly: **Very Extreme is below Extreme**, in 2025 (in-sample) as well. The highest FWI values come late in the season, when burning is already declining.
+- At calibrated "High" or above: hit rate 72.7 %, false-alarm ratio 54.9 %, with 57.5 % of cell-days flagged. 2026 was drier than 2025, so fewer cell-days fell in Low than the 25 % the percentiles imply.
+
+**Indicator AUC, 2026 (0.5 = no skill):**
+
+| Indicator | AUC (95 % CI) | Within-month AUC |
+|---|---|---|
+| FWI | 0.655 (0.638–0.673) | 0.625 |
+| ISI | 0.658 | 0.626 |
+| Experimental composite v0.2 | 0.616 (0.593–0.640) | 0.645 |
+| Drought Code | 0.330 | 0.445 |
+
+FWI's AUC was 0.724 in 2025, so its seasonal skill varies from year to year.
+
+**Detection-likelihood model, out-of-sample on 2026** (tested once; 12 055 positive cell-days):
+
+| Model | AUC (95 % CI) | Within-month AUC | Brier skill vs climatology |
+|---|---|---|---|
+| **Gradient-boosted trees (shown on the map)** | **0.806 (0.792–0.818)** | **0.761** | **0.26** |
+| Gradient-boosted trees without fire history | 0.803 (0.786–0.815) | 0.754 | — |
+| Logistic regression | 0.793 (0.778–0.811) | 0.749 | 0.24 |
+| Baseline: fire history alone | 0.705 (0.680–0.725) | 0.726 | — |
+| Baseline: FWI alone | 0.655 (0.638–0.673) | 0.625 | — |
+
+- **Selection:** gradient-boosted trees were chosen over logistic regression because of their higher 2026 AUC. This is the only choice made after seeing the test season, and it adds a small optimistic bias.
+- **Overfitting:** training AUC is 0.894 (logistic regression 0.839), so there is some overfitting, but it generalises well beyond both baselines.
+- **What drives it:** by permutation importance on 2026, day of year (AUC drop 0.091) and fire history (0.078) dominate. Elevation, NDVI, NDMI, minimum humidity, Drought Code and FFMC each contribute under 0.01. Much of the skill is knowing when and where burning usually happens, which also includes crop-residue burning.
+
 ### Wind flow layer (illustrative)
 
 The dashboard's "Wind flow" toggle animates streaks over the map on a 2D canvas, re-projected every frame so they stay registered in 2D and 3D.
@@ -250,6 +294,8 @@ The dashboard's "Wind flow" toggle animates streaks over the map on a 2D canvas,
 - The detection window is a bounding box that includes parts of neighbouring countries; those detections are labelled "outside Indian state polygons". Incendium does not draw national boundaries itself.
 - Weather is model output at roughly 9–25 km resolution, not station data. Local terrain and microclimate effects are not resolved.
 - FWI was designed for Canadian forest fuels. Indian deciduous forests and grasslands respond differently. Regional class thresholds come from one reference season of ERA5-driven FWI; the live app uses forecast-model weather, whose FWI distribution may differ somewhat.
+- The calibration and the ML model are tested on one independent season (2026) in one region (Karnataka). Other years and regions may behave differently.
+- The ML model learns satellite-detected burning, including crop fires, mostly from season and fire history. It is not an ignition or wildfire-probability model, and it was trained on February–May only.
 - NDVI is greenness, not dryness. NDMI is an indirect water-content proxy. Neither measures dead-fuel moisture.
 - Sentinel-2 composites can be stale or missing under persistent cloud.
 

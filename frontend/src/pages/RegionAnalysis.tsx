@@ -306,7 +306,7 @@ function CellAnalysis({ cellId, date }: { cellId: string; date: string }) {
         <div className="text-sm font-semibold">Uncertainty & provenance</div>
         <ul className="mt-2 grid gap-2 text-[12.5px] leading-snug text-graphite-700 md:grid-cols-2">
           <li>Weather values are model estimates for a ~9–25 km grid point{data.provenance.weather.model_grid_point ? ` (${data.provenance.weather.model_grid_point.lat.toFixed(2)}, ${data.provenance.weather.model_grid_point.lon.toFixed(2)}, ${Math.round(data.provenance.weather.model_grid_point.elevation_m)} m elevation)` : ''}. Local terrain effects are not resolved. Retrieved {timeAgo(data.provenance.weather.retrieved_at)}.</li>
-          <li>FWI uses a 45-day spin-up from standard start values. Thresholds are European (EFFIS) and uncalibrated for India. Computed {timeAgo(data.provenance.fwi.computed_at)}.</li>
+          <li>FWI uses a 45-day spin-up from standard start values. {fwiScheme.note} Computed {timeAgo(data.provenance.fwi.computed_at)}.</li>
           <li>Vegetation intervals need ≥10% cloud-free pixels and may be up to 45 days old. Latest used: {data.vegetation ? `${data.vegetation.interval_from} → ${data.vegetation.interval_to}` : 'none'}.</li>
           <li>Composite weights and breakpoints are assumptions for interpretability, not calibrated values. Risk computed {timeAgo(data.provenance.risk_computed_at)}.</li>
         </ul>
