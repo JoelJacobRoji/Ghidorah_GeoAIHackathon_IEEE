@@ -1,0 +1,27 @@
+{
+  "karnataka": {
+    "thresholds": [
+      14.18,
+      34.06,
+      42.47,
+      50.4,
+      57.78
+    ],
+    "percentiles": [
+      25.0,
+      50.0,
+      75.0,
+      90.0,
+      97.0
+    ],
+    "method": "Pooled percentiles of daily FWI over every cell-day of the reference season (ERA5 inputs, GFWED day-length factors). Detection data were not used.",
+    "source": {
+      "start": "2025-02-01",
+      "end": "2025-05-31",
+      "cell_days": 33840,
+      "cells": 282,
+      "weather": "Open-Meteo archive API, ERA5"
+    },
+    "generated_at": "2026-11-14T16:06:28Z"
+  }
+}

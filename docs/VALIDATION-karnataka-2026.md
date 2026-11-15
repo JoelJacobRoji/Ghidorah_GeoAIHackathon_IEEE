@@ -1,6 +1,6 @@
 # Incendium retrospective comparison: Karnataka, 2026-02-01 → 2026-05-31
 
-_Generated 2026-11-13T22:41:47Z by `python -m incendium validate`. All numbers below are computed from real archived data; nothing is tuned to this sample._
+_Generated 2026-11-14T16:07:30Z by `python -m incendium validate`. All numbers below are computed from real archived data; nothing is tuned to this sample._
 
 > **This is a descriptive association study, not a validation of predictive skill.** VIIRS thermal anomalies include agricultural burning, and FWI describes fire weather, not ignitions.
 
@@ -22,6 +22,19 @@ _Generated 2026-11-13T22:41:47Z by `python -m incendium validate`. All numbers b
 | Very High | 11,196 | 5,182 | 46.28 % | 45.36 % – 47.21 % | 1.30 |
 | Extreme | 3,175 | 1,539 | 48.47 % | 46.74 % – 50.21 % | 1.36 |
 | Very Extreme | 78 | 20 | 25.64 % | 17.26 % – 36.31 % | 0.72 |
+
+## Detection rate by Karnataka-calibrated FWI class (percentiles P25, P50, P75, P90, P97 of season 2025)
+
+**OUT-OF-SAMPLE: thresholds were derived from a different season; this is an independent test.** Thresholds: 14.18, 34.06, 42.47, 50.4, 57.78. Detection rate rises with every class (classes with ≥ 200 cell-days): **no**.
+
+| Class | Cell-days | Share of cell-days | With detection | Rate | 95 % CI | Lift vs. base |
+|---|---:|---:|---:|---:|---|---:|
+| Low | 3,306 | 9.8 % | 287 | 8.68 % | 7.77 % – 9.69 % | 0.24 |
+| Moderate | 11,081 | 32.7 % | 2,999 | 27.06 % | 26.25 % – 27.90 % | 0.76 |
+| High | 10,218 | 30.2 % | 4,363 | 42.70 % | 41.74 % – 43.66 % | 1.20 |
+| Very High | 6,197 | 18.3 % | 2,954 | 47.67 % | 46.43 % – 48.91 % | 1.34 |
+| Extreme | 2,182 | 6.4 % | 1,116 | 51.15 % | 49.05 % – 53.24 % | 1.44 |
+| Very Extreme | 856 | 2.5 % | 336 | 39.25 % | 36.04 % – 42.56 % | 1.10 |
 
 ## Detection rate by experimental composite class
 
@@ -74,6 +87,7 @@ Restricting events to nominal/high-confidence detections:
 | FWI ≥ 21.3 (prototype 'High' or above) | 11,538 | 517 | 17,290 | 4,495 | 95.7 % | 60.0 % | 85.2 % |
 | Composite v0.1 ≥ 50.0 (Dryness = Drought Code) | 11,894 | 161 | 20,000 | 1,785 | 98.7 % | 62.7 % | 94.2 % |
 | Composite ≥ 50.0 (prototype 'High' or above) | 11,804 | 251 | 18,278 | 3,507 | 97.9 % | 60.8 % | 88.9 % |
+| FWI ≥ 34.06 (calibrated 'High' or above) | 8,769 | 3,286 | 10,684 | 11,101 | 72.7 % | 54.9 % | 57.5 % |
 
 ## Composite weight sensitivity
 
