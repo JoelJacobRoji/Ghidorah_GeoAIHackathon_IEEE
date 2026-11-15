@@ -418,6 +418,8 @@ export interface AlertItem {
 
 export interface AlertsResponse {
   alerts: AlertItem[]
+  /** Number of alerts matching the filters (alerts holds at most `limit` of them). */
+  total?: number
   summary: Partial<Record<AlertPriority, { total: number; open: number }>>
   channels: { email: boolean; webhook: boolean; min_priority: AlertPriority; automatic_authority_contact: false }
   rules: string

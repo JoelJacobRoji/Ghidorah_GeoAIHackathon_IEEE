@@ -113,13 +113,26 @@ class AlertsQuery(BaseModel):
     kind: str | None = Field(default=None, pattern="^(detection|outlook)$")
     include_acknowledged: bool = True
     limit: int = Field(default=500, ge=1, le=2000)
+    compact: bool = False
 
 
-def _alert_json(r) -> dict:
+# Compact mode keeps what an alert card shows and drops the bulky payload parts
+# (detection id lists, the full settlement record, outlook cell lists).
+_COMPACT_DROP = ("detections", "nearest_settlement", "cells", "dates")
+_COMPACT_STATION_KEYS = ("id", "name", "lat", "lon", "phone", "distance_km", "osm_url")
+
+
+def _alert_json(r, compact: bool = False) -> dict:
+    payload = json.loads(r["payload"])
+    if compact:
+        for k in _COMPACT_DROP:
+            payload.pop(k, None)
+        if payload.get("fire_stations"):
+            payload["fire_stations"] = [{k: s.get(k) for k in _COMPACT_STATION_KEYS} for s in payload["fire_stations"]]
     return {"id": r["id"], "created_at": r["created_at"], "kind": r["kind"], "priority": r["priority"], "title": r["title"],
             "message": r["message"], "lat": r["lat"], "lon": r["lon"], "state": r["state"], "cell_id": r["cell_id"],
             "acknowledged_at": r["acknowledged_at"], "notified_at": r["notified_at"], "notify_status": r["notify_status"],
-            **json.loads(r["payload"])}
+            **payload}
 
 
 @bp.get("/alerts")
@@ -135,11 +148,13 @@ def list_alerts():
         sql += " AND acknowledged_at IS NULL"
     order = " ORDER BY CASE priority WHEN 'high' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END, acknowledged_at IS NOT NULL, created_at DESC LIMIT ?"
     rows = _db().query(sql + order, (*params, q.limit))
+    total = _db().one(sql.replace("SELECT *", "SELECT COUNT(*) n", 1), tuple(params))["n"]
     summary = _db().query(
         "SELECT priority, COUNT(*) n, SUM(acknowledged_at IS NULL) open FROM alerts WHERE created_at>=? GROUP BY priority",
         (iso(utcnow() - timedelta(hours=q.hours)),))
     return jsonify({
-        "alerts": [_alert_json(r) for r in rows],
+        "alerts": [_alert_json(r, q.compact) for r in rows],
+        "total": total,
         "summary": {r["priority"]: {"total": r["n"], "open": r["open"]} for r in summary},
         "channels": alerts_mod.channel_config(),
         "rules": alerts_mod.__doc__.split("Detection rules")[1].strip() if alerts_mod.__doc__ else "",

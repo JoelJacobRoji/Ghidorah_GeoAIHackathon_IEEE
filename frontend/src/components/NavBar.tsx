@@ -28,7 +28,7 @@ export function Logo({ className = '' }: { className?: string }) {
 
 /** Open medium/high-priority alerts in the last 24 h (polled once a minute, shared cache). */
 function AlertsBadge() {
-  const { data } = useApi<AlertsResponse>('/api/alerts?hours=24&min_priority=medium&include_acknowledged=false&limit=1', { refreshMs: 60_000 })
+  const { data } = useApi<AlertsResponse>('/api/alerts?hours=24&min_priority=medium&include_acknowledged=false&limit=1&compact=true', { refreshMs: 60_000 })
   const n = (data?.summary?.high?.open ?? 0) + (data?.summary?.medium?.open ?? 0)
   if (!n) return null
   return (

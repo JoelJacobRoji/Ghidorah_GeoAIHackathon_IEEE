@@ -130,7 +130,8 @@ Returns up to 15 ranked corridors as LineStrings. Properties:
 Errors: 422, 429 and 503 as above.
 
 ### `GET /api/alerts` (Module 5)
-Query: `hours` (1–720, default 48), `min_priority` (`low|medium|high`), `kind` (`detection|outlook`), `include_acknowledged` (bool), `limit`.
+Query: `hours` (1–720, default 48), `min_priority` (`low|medium|high`), `kind` (`detection|outlook`), `include_acknowledged` (bool), `limit` (1–2000, default 500), `compact` (bool, default false).
+With `compact=true`, each alert omits `detections[]`, `nearest_settlement` and the outlook `cells[]`/`dates[]`, and `fire_stations[]` keeps only `id`, `name`, `lat`, `lon`, `phone`, `distance_km` and `osm_url`. The Alerts page uses it, which makes each alert about 27 % smaller. `total` gives the number of alerts matching the filters, so clients can load more by raising `limit`.
 Alerts are sorted by priority, then open before acknowledged, then newest. Each alert includes:
 - `rules[]`, `detection_count`, `frp_total_mw`, `fwi_class`;
 - `persistent_source` / `persistent_days`;

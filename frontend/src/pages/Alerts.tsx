@@ -1,6 +1,6 @@
 import { AlertOctagon, AlertTriangle, BellRing, Check, Flame, Info, Mail, MapPin, Phone, Webhook } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { NavBar } from '../components/NavBar'
 import { SourceStatus } from '../components/SourceStatus'
@@ -17,13 +17,18 @@ const PRIORITY: Record<AlertPriority, { label: string; icon: typeof Info; chip: 
   low: { label: 'Low priority', icon: Info, chip: 'bg-graphite-900/12 text-graphite-800', bar: '#7d8a8a' },
 }
 const WINDOWS = [24, 48, 168]
+const PAGE = 50
 
 export default function Alerts() {
   const [minP, setMinP] = useState<AlertPriority>('medium')
   const [hours, setHours] = useState(48)
   const [openOnly, setOpenOnly] = useState(false)
-  const path = `/api/alerts?hours=${hours}&min_priority=${minP}&include_acknowledged=${!openOnly}`
+  const [limit, setLimit] = useState(PAGE)
+  // Start from the first page again whenever the filters change.
+  useEffect(() => setLimit(PAGE), [minP, hours, openOnly])
+  const path = `/api/alerts?hours=${hours}&min_priority=${minP}&include_acknowledged=${!openOnly}&compact=true&limit=${limit}`
   const { data, error, loading, refresh } = useApi<AlertsResponse>(path, { refreshMs: 60_000 })
+  const remaining = data?.total !== undefined ? data.total - data.alerts.length : 0
 
   return (
     <div className="min-h-dvh bg-[#d9d4c7] text-graphite-900">
@@ -85,6 +90,14 @@ export default function Alerts() {
             <p className="rounded-xl bg-ivory/60 p-4 text-[14px]">No alerts match these filters. That does not mean there is no fire activity: check the Detections page.</p>
           )}
           {data?.alerts.map((a) => <AlertCard key={a.id} a={a} onAck={async () => { await apiPost(`/api/alerts/${encodeURIComponent(a.id)}/ack`); invalidate('/api/alerts'); }} />)}
+          {data && remaining > 0 && (
+            <div className="flex items-center justify-center gap-3 pt-1 text-[13px]">
+              <span className="text-graphite-600">Showing {data.alerts.length} of {data.total}</span>
+              <button type="button" disabled={loading} onClick={() => setLimit((l) => l + PAGE)} className="rounded-lg border border-graphite-900/20 px-3 py-1.5 font-medium hover:bg-graphite-900/6 disabled:opacity-50">
+                {loading ? 'Loading…' : `Show ${Math.min(PAGE, remaining)} more`}
+              </button>
+            </div>
+          )}
         </section>
 
         {data && (

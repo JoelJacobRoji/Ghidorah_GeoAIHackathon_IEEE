@@ -280,3 +280,20 @@ def test_ops_endpoints(client, db, monkeypatch):
     assert client.get("/api/places/fire-stations?bbox=76,12,77,13").get_json()["meta"]["count"] == 0
     monkeypatch.setattr(ml, "MODEL_DIR", __import__("pathlib").Path("does-not-exist"))
     assert client.get("/api/ml/report").status_code == 404
+
+
+def test_alerts_compact_and_total(client, db):
+    station = {"id": "node/1", "kind": "fire_station", "subtype": "fire_station", "name": "FS", "lat": 13.1, "lon": 76.1,
+               "phone": "100", "operator": None, "population": None, "osm_url": "https://osm/1", "distance_km": 3.2}
+    payload = {"rules": [{"id": "R1", "text": "near"}], "detections": ["d1", "d2"], "detection_count": 2,
+               "nearest_settlement": {"id": "node/2", "name": "Town"}, "fire_stations": [station]}
+    alerts._store(db, [{"id": f"a{i}", "kind": "detection", "priority": "medium", "title": "t", "message": "m", "lat": 13,
+                        "lon": 76, "state": "Karnataka", "cell_id": None, "payload": payload} for i in range(3)])
+    full = client.get("/api/alerts?limit=2").get_json()
+    assert full["total"] == 3 and len(full["alerts"]) == 2
+    assert full["alerts"][0]["detections"] == ["d1", "d2"] and full["alerts"][0]["nearest_settlement"]["name"] == "Town"
+    compact = client.get("/api/alerts?limit=2&compact=true").get_json()
+    a = compact["alerts"][0]
+    assert compact["total"] == 3 and "detections" not in a and "nearest_settlement" not in a
+    assert a["rules"] == payload["rules"] and a["detection_count"] == 2 and a["message"] == "m"
+    assert a["fire_stations"] == [{k: station[k] for k in ("id", "name", "lat", "lon", "phone", "distance_km", "osm_url")}]
