@@ -86,7 +86,7 @@ export function SpreadTool({ point, result, onResult, onClose }: {
         </button>
       </div>
 
-      {error && <div className="mt-3"><ErrorState error={error} onRetry={run} title="Scenario unavailable" compact /></div>}
+      {error && <div className="mt-3"><ErrorState error={error} onRetry={run} title="Scenario unavailable" /></div>}
 
       {m && !busy && (
         <div className="mt-4 space-y-4 border-t border-graphite-900/10 pt-3" aria-live="polite">

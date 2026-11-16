@@ -6,6 +6,7 @@ const EMPTY: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: 
 // Spread arrival time: single-hue ordinal ramp, darkest = earliest (closest to ignition).
 export const SPREAD_RAMP = ['#430c05', '#5e1400', '#792000', '#913200', '#a94300', '#bf5914'] // validated ordinal ramp (single hue, ΔL ≥ 0.06, light end 2.6:1 on the basemap)
 export const CORRIDOR_COLOR = '#1f5fa8'
+export const HUMAN_ZONE_COLOR = '#6b5a3e'
 export const STATION_COLOR = '#c0182a'
 
 function firstSymbolId(m: MLMap): string | undefined {
@@ -78,6 +79,12 @@ export function setFirebreakOverlay(m: MLMap, r: FirebreakResult | null, showHaz
     m.addSource('fb-hazard', { type: 'image', url: r.meta.hazard_image.url, coordinates: [[w, n], [e, n], [e, s], [w, s]] })
     m.addLayer({ id: 'fb-hazard', type: 'raster', source: 'fb-hazard', paint: { 'raster-opacity': 0.8, 'raster-resampling': 'nearest' } }, before)
   }
+  const zone = ensureSource(m, 'fb-human-zone')
+  if (!m.getLayer('fb-zone-fill')) {
+    m.addLayer({ id: 'fb-zone-fill', type: 'fill', source: 'fb-human-zone', paint: { 'fill-color': HUMAN_ZONE_COLOR, 'fill-opacity': 0.14 } }, before)
+    m.addLayer({ id: 'fb-zone-line', type: 'line', source: 'fb-human-zone', paint: { 'line-color': HUMAN_ZONE_COLOR, 'line-width': 1, 'line-opacity': 0.55, 'line-dasharray': [2, 2] } }, before)
+  }
+  zone.setData(r?.meta.human_zone ? { type: 'FeatureCollection', features: [{ type: 'Feature', geometry: r.meta.human_zone, properties: {} }] } : EMPTY)
   const src = ensureSource(m, 'fb-corridors')
   if (!m.getLayer('fb-casing')) {
     m.addLayer({ id: 'fb-casing', type: 'line', source: 'fb-corridors', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#fff', 'line-width': ['interpolate', ['linear'], ['get', 'rank'], 1, 9, 15, 5] } })

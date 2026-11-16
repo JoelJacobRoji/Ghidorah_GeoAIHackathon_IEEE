@@ -156,7 +156,7 @@ export default function Landing() {
         >
           <ul className="mt-5 grid gap-2 text-[13.5px] text-ivory/80">
             <li className="flex items-center gap-2"><Flame className="size-4 text-incendium-300" aria-hidden /> Spread scenarios hour by hour from any ignition point</li>
-            <li className="flex items-center gap-2"><Route className="size-4 text-incendium-300" aria-hidden /> Candidate fuel-break corridors between hazardous fuel and villages</li>
+            <li className="flex items-center gap-2"><Route className="size-4 text-incendium-300" aria-hidden /> Firebreak lines between roads and villages and the deeper forest</li>
             <li className="flex items-center gap-2"><BellRing className="size-4 text-incendium-300" aria-hidden /> Alerts with nearest fire stations; you choose who is notified</li>
           </ul>
           <div className="mt-7 flex flex-wrap gap-3">

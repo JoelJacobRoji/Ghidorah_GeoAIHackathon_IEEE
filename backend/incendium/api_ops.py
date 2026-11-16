@@ -35,7 +35,7 @@ def _body(model):
 
 
 def _busy():
-    return jsonify({"error": "busy", "message": "Another scenario is being computed. Try again in a few seconds."}), 429
+    return jsonify({"error": "busy", "message": "Another spread or firebreak analysis is still running on the server (they run one at a time). Try again in about a minute."}), 429
 
 
 def _upstream(exc: ProviderError):

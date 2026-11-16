@@ -88,12 +88,13 @@ def fetch_archive(
     end: str,
     tz: str,
     model: str = "era5",
+    hourly: tuple[str, ...] = HOURLY_VARS,
 ) -> list[LocationSeries]:
     """Historical reanalysis (ERA5 by default, 0.25°, ~5-day delay) for validation."""
     if not points:
         return []
     _check_points(points)
-    params = {**_common_params(points, tz), "start_date": start, "end_date": end, "models": model}
+    params = {**_common_params(points, tz), "start_date": start, "end_date": end, "models": model, "hourly": ",".join(hourly)}
     resp = request_with_retry(client, PROVIDER, "GET", ARCHIVE_BASE, params=params)
     return _parse(resp, points, tz)
 

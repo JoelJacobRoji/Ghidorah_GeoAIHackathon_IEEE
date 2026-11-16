@@ -13,6 +13,7 @@
     python -m incendium places                             # OpenStreetMap fire stations + settlements
     python -m incendium alerts                             # evaluate alert rules now
     python -m incendium ml-train [--region karnataka]      # train on 2025, test on 2026
+    python -m incendium firebreak-design [--region karnataka]  # fire-season design wind/dryness per cell
 """
 from __future__ import annotations
 
@@ -74,11 +75,13 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("alerts")
     mt = sub.add_parser("ml-train")
     mt.add_argument("--region", default="karnataka")
+    fd = sub.add_parser("firebreak-design", help="fire-season design wind and dryness per cell (for firebreak planning)")
+    fd.add_argument("--region", default="karnataka")
     args = p.parse_args(argv)
 
     if args.cmd == "calibrate-fwi":
         return _calibrate(args.region, args.start, args.end)
-    if args.cmd in ("terrain", "places", "alerts", "ml-train"):
+    if args.cmd in ("terrain", "places", "alerts", "ml-train", "firebreak-design"):
         s0 = get_settings()
         for secret in (s0.firms_map_key, s0.cdse_client_id, s0.cdse_client_secret):
             register_secret(secret)
@@ -93,6 +96,10 @@ def main(argv: list[str] | None = None) -> int:
 
             _print(refresh(db0, list(s0.risk_regions)))
             _print(counts(db0))
+        elif args.cmd == "firebreak-design":
+            from .firebreak_design import build
+
+            _print(build(db0, args.region))
         elif args.cmd == "alerts":
             from .alerts import run_cycle
 

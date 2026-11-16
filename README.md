@@ -13,7 +13,7 @@ It is organised as **five connected modules** (from the Team Ghidorah GeoAI Hack
 |---|---|---|---|
 | 1 | Wildfire prediction | Dashboard risk surfaces · Methodology | FWI (with Karnataka-calibrated classes), the experimental composite, and an experimental ML detection-likelihood model trained on 2025 and tested on 2026 |
 | 2 | Geospatial monitoring | Dashboard (Monitor) · Detections · Regional analysis | Risk zones, vegetation, model weather, wind and live satellite detections with provenance |
-| 3 | Firebreak recommendation | Dashboard → Firebreaks | Ranks existing roads, tracks and rivers as candidate fuel-break anchors between hazardous fuel and downwind settlements |
+| 3 | Firebreak recommendation | Dashboard → Firebreaks | Proposes firebreak lines along the forest edge that separate the zone within 500 m of roads and settlements (where most fires are started by people) from large, high-intensity forest behind it. |
 | 4 | Fire spread simulation | Dashboard → Spread (or "Simulate spread" on a detection/alert) | Hour-by-hour spread scenario from an ignition point (FBP equations, Sentinel-2 fuel, terrain, hourly model weather) |
 | 5 | Emergency alert system | Alerts page · nav badge | Rule-based alerts with the nearest fire stations; optional email/webhook to recipients you configure; never contacts authorities automatically |
 
@@ -47,7 +47,7 @@ Flask API (Python 3.11)
   ├─ terrain.py  Mapterhorn DEM: per-cell elevation/slope, local DEM windows
   ├─ fuel.py     Sentinel-2 median NDVI/NDMI fuel proxy for local windows (Process API)
   ├─ spread.py   Module 4: hourly FFMC, FBP rate of spread, elliptical time-dependent Dijkstra
-  ├─ firebreak.py Module 3: hazard surface + corridor scoring on OSM roads/waterways
+  ├─ firebreak.py Module 3: forest-edge firebreak lines between the road/settlement zone and deep forest
   ├─ alerts.py   Module 5: incident clustering, rules, persistence filter, email/webhook
   ├─ ml.py       Module 1: detection-likelihood model (train 2025 / test 2026), live scoring
   ├─ places.py · providers/osm.py  OpenStreetMap fire stations, settlements, lines (Overpass)
@@ -211,10 +211,14 @@ This is a descriptive association, not a test of predictive skill (see the limit
 - **Limits:** this is illustrative, not a forecast. There is no spotting, suppression or crown fire, and roads are not barriers.
 
 **Firebreak recommendation (Module 3, `POST /api/firebreaks`).**
-- **Hazard surface:** a 100 m map of FBP head rate of spread under dry conditions (the 7-day maximum FFMC and the 90th-percentile afternoon wind), including the slope effect.
-- **Candidates:** OpenStreetMap roads, tracks, paths and waterways, cut into 400 m segments.
-- **Score:** upwind hazard × √(downwind settlement exposure) × crosswind orientation × access × gentle terrain.
-- **Output:** the top segments merged into ranked corridors, each with its score components. They are candidates for field assessment only.
+- **Why:** most fires here are started by people near roads and villages. The goal is a line that holds such a fire at the forest edge instead of letting it run into the forest interior.
+- **Design fire day:** firebreaks are built before the season, so each cell uses its fire-season 90th-percentile FFMC, BUI and wind, and the prevailing afternoon wind direction, from Feb–May 2025 and 2026 (ERA5). `python -m incendium firebreak-design` builds `incendium/data/firebreak_design.json`.
+- **Hazard surface:** 100 m FBP head-fire intensity (kW/m): grass O-1a, forest C-7 (open forest with grass/litter understorey, surface fire), shrub the mean, times the slope factor. Absolute scale: 4000 kW/m = 1.
+- **Human ignition zone:** within 500 m of motorable OSM roads or of settlements' approximate built-up edge.
+- **Fuel:** fire-season Sentinel-2 imagery (1 Feb–30 Apr of the latest season), when crops are harvested and deciduous forest is leaf-off.
+- **Lines:** the outer edge of that zone, kept only where it is in forest/shrub, at least 5 km² of forest lies behind it, and fire-season intensity there is ≥ 2000 kW/m. Lines shorter than 1 km are dropped.
+- **High-risk test:** at least 3 VIIRS forest-fire detections within 2 km in the Feb–May 2025 and 2026 seasons. Evergreen and plantation belts that rarely burn drop out.
+- **Score:** forest hazard × past fires × wind blowing from the zone into the forest (weighted by how steady it is) × human pressure × forest size protected × gentle terrain. Existing tracks or streams along a line are named as possible anchors. Proposals for field assessment only.
 
 **Alerts (Module 5, `GET /api/alerts`).**
 - **Incidents:** detections within 2 km and 30 min of each other are grouped into incidents.

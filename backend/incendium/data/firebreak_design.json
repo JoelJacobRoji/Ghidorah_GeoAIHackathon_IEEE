@@ -1,0 +1,2557 @@
+{
+ "karnataka": {
+  "seasons": [
+   [
+    "2025-02-01",
+    "2025-05-31"
+   ],
+   [
+    "2026-02-01",
+    "2026-05-31"
+   ]
+  ],
+  "method": "Fire-season design conditions per grid cell, for firebreak planning.\n\nFirebreaks are built before the fire season, so they are planned for a bad\nfire-season day, not for today's weather. For each 0.25\u00b0 cell this derives:\n\n  ffmc_p90, bui_p90   90th percentiles of daily FFMC and BUI over the validated\n                      Feb-May seasons (cached cell-day tables from `validate`)\n  ws_p90_kmh          90th percentile of the daily maximum 10 m wind speed\n  wind_from_deg       speed-weighted vector mean of afternoon (12:00-17:00 local)\n                      ERA5 10 m wind direction over the same seasons\n  steadiness          |vector mean| / mean speed (1 = always from one direction)",
+  "source": "Open-Meteo archive API (ERA5); FFMC/BUI from the validation cell-day tables",
+  "generated_at": "2026-11-16T06:05:58Z",
+  "cells": {
+   "karnataka:11.625,76.625": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 273.4,
+    "ws_p90_kmh": 15.7,
+    "cell_days": 240,
+    "wind_from_deg": 61.1,
+    "steadiness": 0.51,
+    "wind_hours": 1440
+   },
+   "karnataka:11.875,76.125": {
+    "ffmc_p90": 92.7,
+    "bui_p90": 230.9,
+    "ws_p90_kmh": 17.1,
+    "cell_days": 240,
+    "wind_from_deg": 37.5,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:11.875,76.375": {
+    "ffmc_p90": 92.5,
+    "bui_p90": 216.7,
+    "ws_p90_kmh": 18.1,
+    "cell_days": 240,
+    "wind_from_deg": 46.4,
+    "steadiness": 0.25,
+    "wind_hours": 1440
+   },
+   "karnataka:11.875,76.625": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 288.7,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 61.7,
+    "steadiness": 0.33,
+    "wind_hours": 1440
+   },
+   "karnataka:11.875,76.875": {
+    "ffmc_p90": 93.0,
+    "bui_p90": 267.3,
+    "ws_p90_kmh": 15.5,
+    "cell_days": 240,
+    "wind_from_deg": 71.6,
+    "steadiness": 0.39,
+    "wind_hours": 1440
+   },
+   "karnataka:11.875,77.125": {
+    "ffmc_p90": 92.8,
+    "bui_p90": 227.1,
+    "ws_p90_kmh": 14.9,
+    "cell_days": 240,
+    "wind_from_deg": 80.3,
+    "steadiness": 0.48,
+    "wind_hours": 1440
+   },
+   "karnataka:11.875,77.375": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 249.2,
+    "ws_p90_kmh": 13.0,
+    "cell_days": 240,
+    "wind_from_deg": 93.1,
+    "steadiness": 0.56,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,75.625": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 169.2,
+    "ws_p90_kmh": 12.1,
+    "cell_days": 240,
+    "wind_from_deg": 257.0,
+    "steadiness": 0.46,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,75.875": {
+    "ffmc_p90": 92.9,
+    "bui_p90": 215.1,
+    "ws_p90_kmh": 16.5,
+    "cell_days": 240,
+    "wind_from_deg": 39.5,
+    "steadiness": 0.16,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,76.125": {
+    "ffmc_p90": 92.5,
+    "bui_p90": 227.6,
+    "ws_p90_kmh": 17.1,
+    "cell_days": 240,
+    "wind_from_deg": 47.2,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,76.375": {
+    "ffmc_p90": 92.4,
+    "bui_p90": 200.5,
+    "ws_p90_kmh": 17.9,
+    "cell_days": 240,
+    "wind_from_deg": 44.4,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,76.625": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 242.9,
+    "ws_p90_kmh": 19.2,
+    "cell_days": 240,
+    "wind_from_deg": 57.8,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,76.875": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 255.2,
+    "ws_p90_kmh": 17.4,
+    "cell_days": 240,
+    "wind_from_deg": 67.5,
+    "steadiness": 0.43,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,77.125": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 254.1,
+    "ws_p90_kmh": 16.2,
+    "cell_days": 240,
+    "wind_from_deg": 78.0,
+    "steadiness": 0.45,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,77.375": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 250.2,
+    "ws_p90_kmh": 15.8,
+    "cell_days": 240,
+    "wind_from_deg": 90.0,
+    "steadiness": 0.47,
+    "wind_hours": 1440
+   },
+   "karnataka:12.125,77.625": {
+    "ffmc_p90": 93.2,
+    "bui_p90": 208.8,
+    "ws_p90_kmh": 15.4,
+    "cell_days": 240,
+    "wind_from_deg": 95.2,
+    "steadiness": 0.52,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,75.375": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 205.4,
+    "ws_p90_kmh": 11.7,
+    "cell_days": 240,
+    "wind_from_deg": 264.2,
+    "steadiness": 0.76,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,75.625": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 216.6,
+    "ws_p90_kmh": 13.4,
+    "cell_days": 240,
+    "wind_from_deg": 309.5,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,75.875": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 238.7,
+    "ws_p90_kmh": 17.0,
+    "cell_days": 240,
+    "wind_from_deg": 45.8,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,76.125": {
+    "ffmc_p90": 92.5,
+    "bui_p90": 241.8,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 54.6,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,76.375": {
+    "ffmc_p90": 92.7,
+    "bui_p90": 243.5,
+    "ws_p90_kmh": 17.5,
+    "cell_days": 240,
+    "wind_from_deg": 59.9,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,76.625": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 283.0,
+    "ws_p90_kmh": 17.6,
+    "cell_days": 240,
+    "wind_from_deg": 64.2,
+    "steadiness": 0.45,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,76.875": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 262.9,
+    "ws_p90_kmh": 16.9,
+    "cell_days": 240,
+    "wind_from_deg": 65.0,
+    "steadiness": 0.46,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,77.125": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 279.2,
+    "ws_p90_kmh": 15.9,
+    "cell_days": 240,
+    "wind_from_deg": 63.8,
+    "steadiness": 0.41,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,77.375": {
+    "ffmc_p90": 92.5,
+    "bui_p90": 195.4,
+    "ws_p90_kmh": 16.7,
+    "cell_days": 240,
+    "wind_from_deg": 71.1,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:12.375,77.625": {
+    "ffmc_p90": 92.4,
+    "bui_p90": 184.9,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 82.5,
+    "steadiness": 0.47,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,75.125": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 290.4,
+    "ws_p90_kmh": 16.1,
+    "cell_days": 240,
+    "wind_from_deg": 263.1,
+    "steadiness": 0.89,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,75.375": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 269.9,
+    "ws_p90_kmh": 13.2,
+    "cell_days": 240,
+    "wind_from_deg": 261.4,
+    "steadiness": 0.7,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,75.625": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 278.0,
+    "ws_p90_kmh": 14.5,
+    "cell_days": 240,
+    "wind_from_deg": 286.1,
+    "steadiness": 0.22,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,75.875": {
+    "ffmc_p90": 92.8,
+    "bui_p90": 204.2,
+    "ws_p90_kmh": 17.5,
+    "cell_days": 240,
+    "wind_from_deg": 41.2,
+    "steadiness": 0.22,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,76.125": {
+    "ffmc_p90": 92.8,
+    "bui_p90": 217.2,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 47.2,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,76.375": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 228.0,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 58.6,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,76.625": {
+    "ffmc_p90": 93.0,
+    "bui_p90": 246.6,
+    "ws_p90_kmh": 17.0,
+    "cell_days": 240,
+    "wind_from_deg": 59.0,
+    "steadiness": 0.43,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,76.875": {
+    "ffmc_p90": 93.0,
+    "bui_p90": 230.0,
+    "ws_p90_kmh": 16.2,
+    "cell_days": 240,
+    "wind_from_deg": 62.0,
+    "steadiness": 0.44,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,77.125": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 231.2,
+    "ws_p90_kmh": 16.1,
+    "cell_days": 240,
+    "wind_from_deg": 64.0,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,77.375": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 214.4,
+    "ws_p90_kmh": 17.4,
+    "cell_days": 240,
+    "wind_from_deg": 68.4,
+    "steadiness": 0.39,
+    "wind_hours": 1440
+   },
+   "karnataka:12.625,77.625": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 195.7,
+    "ws_p90_kmh": 18.4,
+    "cell_days": 240,
+    "wind_from_deg": 75.1,
+    "steadiness": 0.44,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,74.875": {
+    "ffmc_p90": 92.3,
+    "bui_p90": 246.8,
+    "ws_p90_kmh": 17.5,
+    "cell_days": 240,
+    "wind_from_deg": 263.9,
+    "steadiness": 0.91,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,75.125": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 298.4,
+    "ws_p90_kmh": 13.8,
+    "cell_days": 240,
+    "wind_from_deg": 255.0,
+    "steadiness": 0.87,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,75.375": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 266.5,
+    "ws_p90_kmh": 11.8,
+    "cell_days": 240,
+    "wind_from_deg": 246.6,
+    "steadiness": 0.62,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,75.625": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 228.8,
+    "ws_p90_kmh": 15.7,
+    "cell_days": 240,
+    "wind_from_deg": 267.4,
+    "steadiness": 0.05,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,75.875": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 209.6,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 53.9,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,76.125": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 217.0,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 42.9,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,76.375": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 217.8,
+    "ws_p90_kmh": 17.9,
+    "cell_days": 240,
+    "wind_from_deg": 55.0,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,76.625": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 249.0,
+    "ws_p90_kmh": 16.7,
+    "cell_days": 240,
+    "wind_from_deg": 59.5,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,76.875": {
+    "ffmc_p90": 93.0,
+    "bui_p90": 244.9,
+    "ws_p90_kmh": 16.4,
+    "cell_days": 240,
+    "wind_from_deg": 64.4,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,77.125": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 219.1,
+    "ws_p90_kmh": 16.5,
+    "cell_days": 240,
+    "wind_from_deg": 68.4,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,77.375": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 216.1,
+    "ws_p90_kmh": 17.9,
+    "cell_days": 240,
+    "wind_from_deg": 70.5,
+    "steadiness": 0.41,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,77.625": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 207.1,
+    "ws_p90_kmh": 18.8,
+    "cell_days": 240,
+    "wind_from_deg": 75.0,
+    "steadiness": 0.46,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,77.875": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 221.9,
+    "ws_p90_kmh": 19.1,
+    "cell_days": 240,
+    "wind_from_deg": 78.1,
+    "steadiness": 0.51,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,78.125": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 259.2,
+    "ws_p90_kmh": 19.2,
+    "cell_days": 240,
+    "wind_from_deg": 80.9,
+    "steadiness": 0.56,
+    "wind_hours": 1440
+   },
+   "karnataka:12.875,78.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 234.9,
+    "ws_p90_kmh": 19.0,
+    "cell_days": 240,
+    "wind_from_deg": 87.4,
+    "steadiness": 0.63,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,74.875": {
+    "ffmc_p90": 92.2,
+    "bui_p90": 218.2,
+    "ws_p90_kmh": 15.0,
+    "cell_days": 240,
+    "wind_from_deg": 264.1,
+    "steadiness": 0.92,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,75.125": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 231.1,
+    "ws_p90_kmh": 12.3,
+    "cell_days": 240,
+    "wind_from_deg": 256.4,
+    "steadiness": 0.82,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,75.375": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 271.8,
+    "ws_p90_kmh": 12.2,
+    "cell_days": 240,
+    "wind_from_deg": 266.9,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,75.625": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 226.8,
+    "ws_p90_kmh": 16.3,
+    "cell_days": 240,
+    "wind_from_deg": 49.2,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,75.875": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 217.6,
+    "ws_p90_kmh": 17.0,
+    "cell_days": 240,
+    "wind_from_deg": 48.7,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,76.125": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 234.8,
+    "ws_p90_kmh": 16.5,
+    "cell_days": 240,
+    "wind_from_deg": 40.8,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,76.375": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 217.7,
+    "ws_p90_kmh": 16.7,
+    "cell_days": 240,
+    "wind_from_deg": 43.2,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,76.625": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 239.0,
+    "ws_p90_kmh": 17.1,
+    "cell_days": 240,
+    "wind_from_deg": 54.9,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,76.875": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 233.7,
+    "ws_p90_kmh": 16.3,
+    "cell_days": 240,
+    "wind_from_deg": 55.7,
+    "steadiness": 0.39,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,77.125": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 220.5,
+    "ws_p90_kmh": 16.9,
+    "cell_days": 240,
+    "wind_from_deg": 53.9,
+    "steadiness": 0.42,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,77.375": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 213.2,
+    "ws_p90_kmh": 18.2,
+    "cell_days": 240,
+    "wind_from_deg": 58.2,
+    "steadiness": 0.45,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,77.625": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 218.8,
+    "ws_p90_kmh": 19.1,
+    "cell_days": 240,
+    "wind_from_deg": 63.2,
+    "steadiness": 0.49,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,77.875": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 275.4,
+    "ws_p90_kmh": 19.3,
+    "cell_days": 240,
+    "wind_from_deg": 67.5,
+    "steadiness": 0.53,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,78.125": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 265.9,
+    "ws_p90_kmh": 19.5,
+    "cell_days": 240,
+    "wind_from_deg": 71.8,
+    "steadiness": 0.55,
+    "wind_hours": 1440
+   },
+   "karnataka:13.125,78.375": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 255.8,
+    "ws_p90_kmh": 19.0,
+    "cell_days": 240,
+    "wind_from_deg": 81.3,
+    "steadiness": 0.6,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,74.875": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 222.6,
+    "ws_p90_kmh": 14.2,
+    "cell_days": 240,
+    "wind_from_deg": 263.7,
+    "steadiness": 0.9,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,75.125": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 225.5,
+    "ws_p90_kmh": 12.6,
+    "cell_days": 240,
+    "wind_from_deg": 273.4,
+    "steadiness": 0.59,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,75.375": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 275.2,
+    "ws_p90_kmh": 16.0,
+    "cell_days": 240,
+    "wind_from_deg": 350.9,
+    "steadiness": 0.17,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,75.625": {
+    "ffmc_p90": 93.2,
+    "bui_p90": 232.2,
+    "ws_p90_kmh": 15.6,
+    "cell_days": 240,
+    "wind_from_deg": 38.5,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,75.875": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 259.0,
+    "ws_p90_kmh": 16.1,
+    "cell_days": 240,
+    "wind_from_deg": 41.3,
+    "steadiness": 0.39,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,76.125": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 284.8,
+    "ws_p90_kmh": 16.7,
+    "cell_days": 240,
+    "wind_from_deg": 38.2,
+    "steadiness": 0.42,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,76.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 265.0,
+    "ws_p90_kmh": 16.9,
+    "cell_days": 240,
+    "wind_from_deg": 31.8,
+    "steadiness": 0.43,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,76.625": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 265.4,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 41.1,
+    "steadiness": 0.45,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,76.875": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 249.5,
+    "ws_p90_kmh": 17.5,
+    "cell_days": 240,
+    "wind_from_deg": 44.3,
+    "steadiness": 0.45,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,77.125": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 244.1,
+    "ws_p90_kmh": 17.7,
+    "cell_days": 240,
+    "wind_from_deg": 44.2,
+    "steadiness": 0.48,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,77.375": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 243.2,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 44.2,
+    "steadiness": 0.48,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,77.625": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 261.4,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 50.8,
+    "steadiness": 0.51,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,77.875": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 302.2,
+    "ws_p90_kmh": 19.3,
+    "cell_days": 240,
+    "wind_from_deg": 58.5,
+    "steadiness": 0.56,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,78.125": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 298.3,
+    "ws_p90_kmh": 19.3,
+    "cell_days": 240,
+    "wind_from_deg": 63.0,
+    "steadiness": 0.58,
+    "wind_hours": 1440
+   },
+   "karnataka:13.375,78.375": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 285.8,
+    "ws_p90_kmh": 19.3,
+    "cell_days": 240,
+    "wind_from_deg": 70.7,
+    "steadiness": 0.58,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,74.625": {
+    "ffmc_p90": 91.8,
+    "bui_p90": 230.3,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 266.2,
+    "steadiness": 0.93,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,74.875": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 308.6,
+    "ws_p90_kmh": 14.8,
+    "cell_days": 240,
+    "wind_from_deg": 265.7,
+    "steadiness": 0.68,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,75.125": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 298.7,
+    "ws_p90_kmh": 17.0,
+    "cell_days": 240,
+    "wind_from_deg": 289.6,
+    "steadiness": 0.22,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,75.375": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 301.6,
+    "ws_p90_kmh": 16.3,
+    "cell_days": 240,
+    "wind_from_deg": 336.6,
+    "steadiness": 0.21,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,75.625": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 258.2,
+    "ws_p90_kmh": 16.1,
+    "cell_days": 240,
+    "wind_from_deg": 25.2,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,75.875": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 251.7,
+    "ws_p90_kmh": 17.2,
+    "cell_days": 240,
+    "wind_from_deg": 30.6,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,76.125": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 277.9,
+    "ws_p90_kmh": 18.4,
+    "cell_days": 240,
+    "wind_from_deg": 35.9,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,76.375": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 303.4,
+    "ws_p90_kmh": 17.8,
+    "cell_days": 240,
+    "wind_from_deg": 29.6,
+    "steadiness": 0.43,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,76.625": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 285.9,
+    "ws_p90_kmh": 17.4,
+    "cell_days": 240,
+    "wind_from_deg": 29.1,
+    "steadiness": 0.47,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,76.875": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 284.8,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 34.8,
+    "steadiness": 0.47,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,77.125": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 286.9,
+    "ws_p90_kmh": 18.2,
+    "cell_days": 240,
+    "wind_from_deg": 40.8,
+    "steadiness": 0.51,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,77.375": {
+    "ffmc_p90": 95.1,
+    "bui_p90": 293.4,
+    "ws_p90_kmh": 18.5,
+    "cell_days": 240,
+    "wind_from_deg": 40.6,
+    "steadiness": 0.51,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,77.625": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 285.2,
+    "ws_p90_kmh": 18.5,
+    "cell_days": 240,
+    "wind_from_deg": 45.8,
+    "steadiness": 0.53,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,77.875": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 350.3,
+    "ws_p90_kmh": 19.1,
+    "cell_days": 240,
+    "wind_from_deg": 54.0,
+    "steadiness": 0.57,
+    "wind_hours": 1440
+   },
+   "karnataka:13.625,78.125": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 481.5,
+    "ws_p90_kmh": 18.7,
+    "cell_days": 240,
+    "wind_from_deg": 57.8,
+    "steadiness": 0.59,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,74.625": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 223.4,
+    "ws_p90_kmh": 16.0,
+    "cell_days": 240,
+    "wind_from_deg": 264.3,
+    "steadiness": 0.89,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,74.875": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 288.3,
+    "ws_p90_kmh": 17.6,
+    "cell_days": 240,
+    "wind_from_deg": 265.9,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,75.125": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 286.0,
+    "ws_p90_kmh": 18.1,
+    "cell_days": 240,
+    "wind_from_deg": 323.3,
+    "steadiness": 0.12,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,75.375": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 268.4,
+    "ws_p90_kmh": 17.7,
+    "cell_days": 240,
+    "wind_from_deg": 12.4,
+    "steadiness": 0.2,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,75.625": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 280.3,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 5.9,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,75.875": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 259.2,
+    "ws_p90_kmh": 18.5,
+    "cell_days": 240,
+    "wind_from_deg": 11.3,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,76.125": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 269.1,
+    "ws_p90_kmh": 19.5,
+    "cell_days": 240,
+    "wind_from_deg": 30.8,
+    "steadiness": 0.33,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,76.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 300.7,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 32.5,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,76.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 296.5,
+    "ws_p90_kmh": 17.9,
+    "cell_days": 240,
+    "wind_from_deg": 24.9,
+    "steadiness": 0.44,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,76.875": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 315.0,
+    "ws_p90_kmh": 18.4,
+    "cell_days": 240,
+    "wind_from_deg": 30.0,
+    "steadiness": 0.45,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,77.125": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 302.5,
+    "ws_p90_kmh": 18.7,
+    "cell_days": 240,
+    "wind_from_deg": 37.7,
+    "steadiness": 0.49,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,77.375": {
+    "ffmc_p90": 95.4,
+    "bui_p90": 323.9,
+    "ws_p90_kmh": 18.6,
+    "cell_days": 240,
+    "wind_from_deg": 38.2,
+    "steadiness": 0.54,
+    "wind_hours": 1440
+   },
+   "karnataka:13.875,77.875": {
+    "ffmc_p90": 95.1,
+    "bui_p90": 363.3,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 50.8,
+    "steadiness": 0.57,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,74.625": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 328.4,
+    "ws_p90_kmh": 15.7,
+    "cell_days": 240,
+    "wind_from_deg": 262.0,
+    "steadiness": 0.68,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,74.875": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 299.2,
+    "ws_p90_kmh": 18.6,
+    "cell_days": 240,
+    "wind_from_deg": 286.6,
+    "steadiness": 0.27,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,75.125": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 282.3,
+    "ws_p90_kmh": 18.5,
+    "cell_days": 240,
+    "wind_from_deg": 358.3,
+    "steadiness": 0.17,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,75.375": {
+    "ffmc_p90": 93.1,
+    "bui_p90": 272.6,
+    "ws_p90_kmh": 17.8,
+    "cell_days": 240,
+    "wind_from_deg": 18.4,
+    "steadiness": 0.21,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,75.625": {
+    "ffmc_p90": 93.2,
+    "bui_p90": 288.6,
+    "ws_p90_kmh": 17.8,
+    "cell_days": 240,
+    "wind_from_deg": 8.1,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,75.875": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 288.0,
+    "ws_p90_kmh": 18.6,
+    "cell_days": 240,
+    "wind_from_deg": 5.3,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,76.125": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 275.3,
+    "ws_p90_kmh": 19.8,
+    "cell_days": 240,
+    "wind_from_deg": 22.3,
+    "steadiness": 0.31,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,76.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 288.9,
+    "ws_p90_kmh": 19.4,
+    "cell_days": 240,
+    "wind_from_deg": 34.5,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,76.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 309.7,
+    "ws_p90_kmh": 18.5,
+    "cell_days": 240,
+    "wind_from_deg": 25.9,
+    "steadiness": 0.42,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,76.875": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 315.4,
+    "ws_p90_kmh": 18.6,
+    "cell_days": 240,
+    "wind_from_deg": 30.1,
+    "steadiness": 0.44,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,77.125": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 306.6,
+    "ws_p90_kmh": 18.8,
+    "cell_days": 240,
+    "wind_from_deg": 38.1,
+    "steadiness": 0.5,
+    "wind_hours": 1440
+   },
+   "karnataka:14.125,77.375": {
+    "ffmc_p90": 95.4,
+    "bui_p90": 365.7,
+    "ws_p90_kmh": 18.8,
+    "cell_days": 240,
+    "wind_from_deg": 38.8,
+    "steadiness": 0.55,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,74.375": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 337.4,
+    "ws_p90_kmh": 15.7,
+    "cell_days": 240,
+    "wind_from_deg": 259.2,
+    "steadiness": 0.89,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,74.625": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 328.1,
+    "ws_p90_kmh": 17.0,
+    "cell_days": 240,
+    "wind_from_deg": 262.4,
+    "steadiness": 0.54,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,74.875": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 294.9,
+    "ws_p90_kmh": 18.6,
+    "cell_days": 240,
+    "wind_from_deg": 286.7,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,75.125": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 274.7,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 345.2,
+    "steadiness": 0.13,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,75.375": {
+    "ffmc_p90": 93.4,
+    "bui_p90": 288.5,
+    "ws_p90_kmh": 18.8,
+    "cell_days": 240,
+    "wind_from_deg": 7.7,
+    "steadiness": 0.15,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,75.625": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 295.5,
+    "ws_p90_kmh": 19.1,
+    "cell_days": 240,
+    "wind_from_deg": 12.3,
+    "steadiness": 0.16,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,75.875": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 291.8,
+    "ws_p90_kmh": 19.6,
+    "cell_days": 240,
+    "wind_from_deg": 15.9,
+    "steadiness": 0.21,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,76.125": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 280.3,
+    "ws_p90_kmh": 20.5,
+    "cell_days": 240,
+    "wind_from_deg": 24.7,
+    "steadiness": 0.27,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,76.375": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 298.6,
+    "ws_p90_kmh": 20.4,
+    "cell_days": 240,
+    "wind_from_deg": 39.0,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,76.625": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 317.2,
+    "ws_p90_kmh": 19.4,
+    "cell_days": 240,
+    "wind_from_deg": 30.1,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,76.875": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 344.2,
+    "ws_p90_kmh": 19.0,
+    "cell_days": 240,
+    "wind_from_deg": 33.3,
+    "steadiness": 0.41,
+    "wind_hours": 1440
+   },
+   "karnataka:14.375,77.125": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 355.3,
+    "ws_p90_kmh": 19.9,
+    "cell_days": 240,
+    "wind_from_deg": 41.9,
+    "steadiness": 0.47,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,74.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 322.6,
+    "ws_p90_kmh": 13.7,
+    "cell_days": 240,
+    "wind_from_deg": 250.7,
+    "steadiness": 0.76,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,74.625": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 293.6,
+    "ws_p90_kmh": 15.6,
+    "cell_days": 240,
+    "wind_from_deg": 254.0,
+    "steadiness": 0.42,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,74.875": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 280.0,
+    "ws_p90_kmh": 18.2,
+    "cell_days": 240,
+    "wind_from_deg": 261.0,
+    "steadiness": 0.13,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,75.125": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 295.8,
+    "ws_p90_kmh": 19.8,
+    "cell_days": 240,
+    "wind_from_deg": 322.2,
+    "steadiness": 0.04,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,75.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 300.2,
+    "ws_p90_kmh": 20.3,
+    "cell_days": 240,
+    "wind_from_deg": 3.4,
+    "steadiness": 0.07,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,75.625": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 302.1,
+    "ws_p90_kmh": 20.3,
+    "cell_days": 240,
+    "wind_from_deg": 23.8,
+    "steadiness": 0.12,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,75.875": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 291.0,
+    "ws_p90_kmh": 20.4,
+    "cell_days": 240,
+    "wind_from_deg": 25.6,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,76.125": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 288.0,
+    "ws_p90_kmh": 20.5,
+    "cell_days": 240,
+    "wind_from_deg": 21.6,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,76.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 288.3,
+    "ws_p90_kmh": 20.9,
+    "cell_days": 240,
+    "wind_from_deg": 43.8,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:14.625,76.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 307.3,
+    "ws_p90_kmh": 20.1,
+    "cell_days": 240,
+    "wind_from_deg": 51.7,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,74.125": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 258.7,
+    "ws_p90_kmh": 15.2,
+    "cell_days": 240,
+    "wind_from_deg": 261.7,
+    "steadiness": 0.87,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,74.375": {
+    "ffmc_p90": 92.9,
+    "bui_p90": 286.8,
+    "ws_p90_kmh": 14.2,
+    "cell_days": 240,
+    "wind_from_deg": 256.8,
+    "steadiness": 0.54,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,74.625": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 327.9,
+    "ws_p90_kmh": 15.8,
+    "cell_days": 240,
+    "wind_from_deg": 258.9,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,74.875": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 309.4,
+    "ws_p90_kmh": 17.9,
+    "cell_days": 240,
+    "wind_from_deg": 253.9,
+    "steadiness": 0.1,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,75.125": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 309.0,
+    "ws_p90_kmh": 20.3,
+    "cell_days": 240,
+    "wind_from_deg": 193.8,
+    "steadiness": 0.02,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,75.375": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 306.4,
+    "ws_p90_kmh": 21.1,
+    "cell_days": 240,
+    "wind_from_deg": 91.9,
+    "steadiness": 0.07,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,75.625": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 307.0,
+    "ws_p90_kmh": 21.2,
+    "cell_days": 240,
+    "wind_from_deg": 68.6,
+    "steadiness": 0.16,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,75.875": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 299.6,
+    "ws_p90_kmh": 21.0,
+    "cell_days": 240,
+    "wind_from_deg": 43.4,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,76.125": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 294.4,
+    "ws_p90_kmh": 20.0,
+    "cell_days": 240,
+    "wind_from_deg": 18.9,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,76.375": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 269.5,
+    "ws_p90_kmh": 20.3,
+    "cell_days": 240,
+    "wind_from_deg": 21.2,
+    "steadiness": 0.25,
+    "wind_hours": 1440
+   },
+   "karnataka:14.875,76.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 294.3,
+    "ws_p90_kmh": 21.2,
+    "cell_days": 240,
+    "wind_from_deg": 47.5,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,74.375": {
+    "ffmc_p90": 92.6,
+    "bui_p90": 235.0,
+    "ws_p90_kmh": 15.7,
+    "cell_days": 240,
+    "wind_from_deg": 265.1,
+    "steadiness": 0.42,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,74.625": {
+    "ffmc_p90": 93.6,
+    "bui_p90": 267.9,
+    "ws_p90_kmh": 17.4,
+    "cell_days": 240,
+    "wind_from_deg": 268.5,
+    "steadiness": 0.18,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,74.875": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 292.1,
+    "ws_p90_kmh": 19.1,
+    "cell_days": 240,
+    "wind_from_deg": 280.0,
+    "steadiness": 0.07,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,75.125": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 282.6,
+    "ws_p90_kmh": 21.0,
+    "cell_days": 240,
+    "wind_from_deg": 26.7,
+    "steadiness": 0.01,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,75.375": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 287.7,
+    "ws_p90_kmh": 22.0,
+    "cell_days": 240,
+    "wind_from_deg": 78.8,
+    "steadiness": 0.1,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,75.625": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 272.5,
+    "ws_p90_kmh": 21.5,
+    "cell_days": 240,
+    "wind_from_deg": 87.9,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,75.875": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 272.7,
+    "ws_p90_kmh": 20.9,
+    "cell_days": 240,
+    "wind_from_deg": 80.2,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,76.125": {
+    "ffmc_p90": 93.3,
+    "bui_p90": 286.5,
+    "ws_p90_kmh": 19.9,
+    "cell_days": 240,
+    "wind_from_deg": 57.6,
+    "steadiness": 0.21,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,76.375": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 269.4,
+    "ws_p90_kmh": 20.9,
+    "cell_days": 240,
+    "wind_from_deg": 29.0,
+    "steadiness": 0.25,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,76.625": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 290.3,
+    "ws_p90_kmh": 21.5,
+    "cell_days": 240,
+    "wind_from_deg": 40.2,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,76.875": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 329.0,
+    "ws_p90_kmh": 20.8,
+    "cell_days": 240,
+    "wind_from_deg": 36.8,
+    "steadiness": 0.33,
+    "wind_hours": 1440
+   },
+   "karnataka:15.125,77.125": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 353.6,
+    "ws_p90_kmh": 20.7,
+    "cell_days": 240,
+    "wind_from_deg": 41.7,
+    "steadiness": 0.33,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,74.375": {
+    "ffmc_p90": 93.5,
+    "bui_p90": 260.8,
+    "ws_p90_kmh": 17.5,
+    "cell_days": 240,
+    "wind_from_deg": 264.4,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,74.625": {
+    "ffmc_p90": 93.8,
+    "bui_p90": 286.8,
+    "ws_p90_kmh": 18.5,
+    "cell_days": 240,
+    "wind_from_deg": 269.1,
+    "steadiness": 0.14,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,74.875": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 294.6,
+    "ws_p90_kmh": 20.0,
+    "cell_days": 240,
+    "wind_from_deg": 287.8,
+    "steadiness": 0.05,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,75.125": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 290.4,
+    "ws_p90_kmh": 21.8,
+    "cell_days": 240,
+    "wind_from_deg": 42.7,
+    "steadiness": 0.04,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,75.375": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 288.8,
+    "ws_p90_kmh": 21.8,
+    "cell_days": 240,
+    "wind_from_deg": 61.1,
+    "steadiness": 0.12,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,75.625": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 277.8,
+    "ws_p90_kmh": 21.6,
+    "cell_days": 240,
+    "wind_from_deg": 76.8,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,75.875": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 284.8,
+    "ws_p90_kmh": 20.8,
+    "cell_days": 240,
+    "wind_from_deg": 94.2,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,76.125": {
+    "ffmc_p90": 93.7,
+    "bui_p90": 289.8,
+    "ws_p90_kmh": 20.7,
+    "cell_days": 240,
+    "wind_from_deg": 92.7,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,76.375": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 308.6,
+    "ws_p90_kmh": 21.6,
+    "cell_days": 240,
+    "wind_from_deg": 67.0,
+    "steadiness": 0.27,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,76.625": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 302.7,
+    "ws_p90_kmh": 21.0,
+    "cell_days": 240,
+    "wind_from_deg": 47.5,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:15.375,76.875": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 308.9,
+    "ws_p90_kmh": 20.5,
+    "cell_days": 240,
+    "wind_from_deg": 34.6,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,74.125": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 305.3,
+    "ws_p90_kmh": 16.0,
+    "cell_days": 240,
+    "wind_from_deg": 259.6,
+    "steadiness": 0.59,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,74.375": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 263.5,
+    "ws_p90_kmh": 18.7,
+    "cell_days": 240,
+    "wind_from_deg": 269.1,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,74.625": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 269.5,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 287.3,
+    "steadiness": 0.12,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,74.875": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 286.9,
+    "ws_p90_kmh": 20.1,
+    "cell_days": 240,
+    "wind_from_deg": 343.4,
+    "steadiness": 0.05,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,75.125": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 308.2,
+    "ws_p90_kmh": 20.6,
+    "cell_days": 240,
+    "wind_from_deg": 64.9,
+    "steadiness": 0.08,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,75.375": {
+    "ffmc_p90": 95.0,
+    "bui_p90": 292.4,
+    "ws_p90_kmh": 21.7,
+    "cell_days": 240,
+    "wind_from_deg": 66.9,
+    "steadiness": 0.17,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,75.625": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 287.3,
+    "ws_p90_kmh": 20.8,
+    "cell_days": 240,
+    "wind_from_deg": 65.6,
+    "steadiness": 0.21,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,75.875": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 275.3,
+    "ws_p90_kmh": 20.6,
+    "cell_days": 240,
+    "wind_from_deg": 81.4,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,76.125": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 268.7,
+    "ws_p90_kmh": 21.6,
+    "cell_days": 240,
+    "wind_from_deg": 86.5,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,76.375": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 309.3,
+    "ws_p90_kmh": 22.9,
+    "cell_days": 240,
+    "wind_from_deg": 80.2,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,76.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 339.9,
+    "ws_p90_kmh": 21.1,
+    "cell_days": 240,
+    "wind_from_deg": 68.0,
+    "steadiness": 0.35,
+    "wind_hours": 1440
+   },
+   "karnataka:15.625,76.875": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 340.7,
+    "ws_p90_kmh": 20.3,
+    "cell_days": 240,
+    "wind_from_deg": 49.8,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,74.375": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 256.7,
+    "ws_p90_kmh": 19.3,
+    "cell_days": 240,
+    "wind_from_deg": 298.5,
+    "steadiness": 0.18,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,74.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 330.6,
+    "ws_p90_kmh": 19.8,
+    "cell_days": 240,
+    "wind_from_deg": 332.3,
+    "steadiness": 0.13,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,74.875": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 281.0,
+    "ws_p90_kmh": 20.1,
+    "cell_days": 240,
+    "wind_from_deg": 10.2,
+    "steadiness": 0.12,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,75.125": {
+    "ffmc_p90": 95.1,
+    "bui_p90": 307.8,
+    "ws_p90_kmh": 21.1,
+    "cell_days": 240,
+    "wind_from_deg": 46.2,
+    "steadiness": 0.15,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,75.375": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 295.4,
+    "ws_p90_kmh": 20.9,
+    "cell_days": 240,
+    "wind_from_deg": 71.9,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,75.625": {
+    "ffmc_p90": 95.0,
+    "bui_p90": 292.7,
+    "ws_p90_kmh": 21.0,
+    "cell_days": 240,
+    "wind_from_deg": 69.6,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,75.875": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 289.3,
+    "ws_p90_kmh": 20.6,
+    "cell_days": 240,
+    "wind_from_deg": 70.5,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,76.125": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 279.1,
+    "ws_p90_kmh": 21.8,
+    "cell_days": 240,
+    "wind_from_deg": 73.3,
+    "steadiness": 0.33,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,76.375": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 274.2,
+    "ws_p90_kmh": 22.6,
+    "cell_days": 240,
+    "wind_from_deg": 75.7,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,76.625": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 310.1,
+    "ws_p90_kmh": 20.8,
+    "cell_days": 240,
+    "wind_from_deg": 76.1,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,76.875": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 288.0,
+    "ws_p90_kmh": 19.9,
+    "cell_days": 240,
+    "wind_from_deg": 66.1,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:15.875,77.125": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 354.7,
+    "ws_p90_kmh": 20.0,
+    "cell_days": 240,
+    "wind_from_deg": 56.6,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,74.375": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 300.4,
+    "ws_p90_kmh": 20.3,
+    "cell_days": 240,
+    "wind_from_deg": 321.9,
+    "steadiness": 0.21,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,74.625": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 287.8,
+    "ws_p90_kmh": 20.7,
+    "cell_days": 240,
+    "wind_from_deg": 327.4,
+    "steadiness": 0.15,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,74.875": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 297.7,
+    "ws_p90_kmh": 21.3,
+    "cell_days": 240,
+    "wind_from_deg": 3.2,
+    "steadiness": 0.14,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,75.125": {
+    "ffmc_p90": 95.3,
+    "bui_p90": 292.6,
+    "ws_p90_kmh": 20.8,
+    "cell_days": 240,
+    "wind_from_deg": 32.9,
+    "steadiness": 0.14,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,75.375": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 300.2,
+    "ws_p90_kmh": 21.3,
+    "cell_days": 240,
+    "wind_from_deg": 64.7,
+    "steadiness": 0.17,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,75.625": {
+    "ffmc_p90": 95.3,
+    "bui_p90": 307.4,
+    "ws_p90_kmh": 23.0,
+    "cell_days": 240,
+    "wind_from_deg": 85.9,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,75.875": {
+    "ffmc_p90": 95.3,
+    "bui_p90": 336.9,
+    "ws_p90_kmh": 22.9,
+    "cell_days": 240,
+    "wind_from_deg": 85.5,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,76.125": {
+    "ffmc_p90": 95.0,
+    "bui_p90": 296.4,
+    "ws_p90_kmh": 21.6,
+    "cell_days": 240,
+    "wind_from_deg": 82.1,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,76.375": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 279.5,
+    "ws_p90_kmh": 21.6,
+    "cell_days": 240,
+    "wind_from_deg": 79.3,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,76.625": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 273.6,
+    "ws_p90_kmh": 20.2,
+    "cell_days": 240,
+    "wind_from_deg": 79.6,
+    "steadiness": 0.37,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,76.875": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 287.2,
+    "ws_p90_kmh": 19.7,
+    "cell_days": 240,
+    "wind_from_deg": 76.2,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,77.125": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 360.8,
+    "ws_p90_kmh": 19.6,
+    "cell_days": 240,
+    "wind_from_deg": 70.2,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:16.125,77.375": {
+    "ffmc_p90": 94.0,
+    "bui_p90": 347.6,
+    "ws_p90_kmh": 18.3,
+    "cell_days": 240,
+    "wind_from_deg": 73.1,
+    "steadiness": 0.22,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,74.375": {
+    "ffmc_p90": 94.7,
+    "bui_p90": 308.7,
+    "ws_p90_kmh": 21.1,
+    "cell_days": 240,
+    "wind_from_deg": 297.5,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,74.625": {
+    "ffmc_p90": 95.0,
+    "bui_p90": 294.9,
+    "ws_p90_kmh": 21.7,
+    "cell_days": 240,
+    "wind_from_deg": 293.3,
+    "steadiness": 0.18,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,74.875": {
+    "ffmc_p90": 95.4,
+    "bui_p90": 303.2,
+    "ws_p90_kmh": 22.8,
+    "cell_days": 240,
+    "wind_from_deg": 327.2,
+    "steadiness": 0.06,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,75.125": {
+    "ffmc_p90": 95.5,
+    "bui_p90": 351.6,
+    "ws_p90_kmh": 22.3,
+    "cell_days": 240,
+    "wind_from_deg": 45.5,
+    "steadiness": 0.04,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,75.375": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 352.7,
+    "ws_p90_kmh": 23.2,
+    "cell_days": 240,
+    "wind_from_deg": 74.7,
+    "steadiness": 0.13,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,75.625": {
+    "ffmc_p90": 95.8,
+    "bui_p90": 339.6,
+    "ws_p90_kmh": 26.8,
+    "cell_days": 240,
+    "wind_from_deg": 92.7,
+    "steadiness": 0.22,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,75.875": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 311.9,
+    "ws_p90_kmh": 26.3,
+    "cell_days": 240,
+    "wind_from_deg": 98.9,
+    "steadiness": 0.29,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,76.125": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 309.0,
+    "ws_p90_kmh": 24.4,
+    "cell_days": 240,
+    "wind_from_deg": 98.3,
+    "steadiness": 0.36,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,76.375": {
+    "ffmc_p90": 95.1,
+    "bui_p90": 315.7,
+    "ws_p90_kmh": 22.4,
+    "cell_days": 240,
+    "wind_from_deg": 99.2,
+    "steadiness": 0.4,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,76.625": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 288.6,
+    "ws_p90_kmh": 19.5,
+    "cell_days": 240,
+    "wind_from_deg": 99.4,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,76.875": {
+    "ffmc_p90": 94.3,
+    "bui_p90": 268.7,
+    "ws_p90_kmh": 19.6,
+    "cell_days": 240,
+    "wind_from_deg": 101.0,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,77.125": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 300.3,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 115.1,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:16.375,77.375": {
+    "ffmc_p90": 94.1,
+    "bui_p90": 355.0,
+    "ws_p90_kmh": 17.2,
+    "cell_days": 240,
+    "wind_from_deg": 129.4,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,74.375": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 433.5,
+    "ws_p90_kmh": 21.2,
+    "cell_days": 240,
+    "wind_from_deg": 275.4,
+    "steadiness": 0.39,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,74.625": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 308.8,
+    "ws_p90_kmh": 21.7,
+    "cell_days": 240,
+    "wind_from_deg": 269.8,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,74.875": {
+    "ffmc_p90": 96.2,
+    "bui_p90": 328.2,
+    "ws_p90_kmh": 24.8,
+    "cell_days": 240,
+    "wind_from_deg": 260.4,
+    "steadiness": 0.05,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,75.125": {
+    "ffmc_p90": 96.2,
+    "bui_p90": 327.5,
+    "ws_p90_kmh": 24.6,
+    "cell_days": 240,
+    "wind_from_deg": 50.4,
+    "steadiness": 0.05,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,75.375": {
+    "ffmc_p90": 96.1,
+    "bui_p90": 333.9,
+    "ws_p90_kmh": 25.2,
+    "cell_days": 240,
+    "wind_from_deg": 59.1,
+    "steadiness": 0.16,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,75.625": {
+    "ffmc_p90": 96.0,
+    "bui_p90": 330.8,
+    "ws_p90_kmh": 27.2,
+    "cell_days": 240,
+    "wind_from_deg": 63.2,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,75.875": {
+    "ffmc_p90": 96.0,
+    "bui_p90": 311.4,
+    "ws_p90_kmh": 28.4,
+    "cell_days": 240,
+    "wind_from_deg": 70.7,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,76.125": {
+    "ffmc_p90": 95.8,
+    "bui_p90": 306.1,
+    "ws_p90_kmh": 27.2,
+    "cell_days": 240,
+    "wind_from_deg": 83.3,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,76.375": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 301.4,
+    "ws_p90_kmh": 25.7,
+    "cell_days": 240,
+    "wind_from_deg": 98.4,
+    "steadiness": 0.39,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,76.625": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 273.3,
+    "ws_p90_kmh": 20.6,
+    "cell_days": 240,
+    "wind_from_deg": 115.0,
+    "steadiness": 0.38,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,76.875": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 285.6,
+    "ws_p90_kmh": 19.8,
+    "cell_days": 240,
+    "wind_from_deg": 139.9,
+    "steadiness": 0.31,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,77.125": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 292.2,
+    "ws_p90_kmh": 19.0,
+    "cell_days": 240,
+    "wind_from_deg": 155.3,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:16.625,77.375": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 304.5,
+    "ws_p90_kmh": 18.3,
+    "cell_days": 240,
+    "wind_from_deg": 154.0,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,74.875": {
+    "ffmc_p90": 96.3,
+    "bui_p90": 320.7,
+    "ws_p90_kmh": 25.9,
+    "cell_days": 240,
+    "wind_from_deg": 20.2,
+    "steadiness": 0.14,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,75.125": {
+    "ffmc_p90": 96.3,
+    "bui_p90": 333.5,
+    "ws_p90_kmh": 27.7,
+    "cell_days": 240,
+    "wind_from_deg": 32.6,
+    "steadiness": 0.25,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,75.375": {
+    "ffmc_p90": 96.2,
+    "bui_p90": 322.9,
+    "ws_p90_kmh": 28.1,
+    "cell_days": 240,
+    "wind_from_deg": 37.2,
+    "steadiness": 0.31,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,75.625": {
+    "ffmc_p90": 96.1,
+    "bui_p90": 339.2,
+    "ws_p90_kmh": 27.8,
+    "cell_days": 240,
+    "wind_from_deg": 43.4,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,75.875": {
+    "ffmc_p90": 96.2,
+    "bui_p90": 334.4,
+    "ws_p90_kmh": 27.5,
+    "cell_days": 240,
+    "wind_from_deg": 53.2,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,76.125": {
+    "ffmc_p90": 96.1,
+    "bui_p90": 355.8,
+    "ws_p90_kmh": 25.2,
+    "cell_days": 240,
+    "wind_from_deg": 64.6,
+    "steadiness": 0.33,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,76.375": {
+    "ffmc_p90": 95.6,
+    "bui_p90": 310.4,
+    "ws_p90_kmh": 22.3,
+    "cell_days": 240,
+    "wind_from_deg": 85.4,
+    "steadiness": 0.34,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,76.625": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 266.5,
+    "ws_p90_kmh": 20.0,
+    "cell_days": 240,
+    "wind_from_deg": 104.7,
+    "steadiness": 0.31,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,76.875": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 280.7,
+    "ws_p90_kmh": 19.0,
+    "cell_days": 240,
+    "wind_from_deg": 114.3,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,77.125": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 271.6,
+    "ws_p90_kmh": 18.9,
+    "cell_days": 240,
+    "wind_from_deg": 98.2,
+    "steadiness": 0.15,
+    "wind_hours": 1440
+   },
+   "karnataka:16.875,77.375": {
+    "ffmc_p90": 94.2,
+    "bui_p90": 283.8,
+    "ws_p90_kmh": 18.3,
+    "cell_days": 240,
+    "wind_from_deg": 80.9,
+    "steadiness": 0.11,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,75.625": {
+    "ffmc_p90": 96.3,
+    "bui_p90": 331.2,
+    "ws_p90_kmh": 28.4,
+    "cell_days": 240,
+    "wind_from_deg": 37.6,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,75.875": {
+    "ffmc_p90": 96.3,
+    "bui_p90": 375.7,
+    "ws_p90_kmh": 25.8,
+    "cell_days": 240,
+    "wind_from_deg": 58.0,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,76.125": {
+    "ffmc_p90": 96.0,
+    "bui_p90": 340.3,
+    "ws_p90_kmh": 21.4,
+    "cell_days": 240,
+    "wind_from_deg": 78.4,
+    "steadiness": 0.24,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,76.375": {
+    "ffmc_p90": 96.0,
+    "bui_p90": 347.3,
+    "ws_p90_kmh": 19.7,
+    "cell_days": 240,
+    "wind_from_deg": 98.4,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,76.625": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 307.6,
+    "ws_p90_kmh": 19.8,
+    "cell_days": 240,
+    "wind_from_deg": 107.6,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,76.875": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 313.3,
+    "ws_p90_kmh": 17.8,
+    "cell_days": 240,
+    "wind_from_deg": 111.0,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,77.125": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 315.0,
+    "ws_p90_kmh": 17.3,
+    "cell_days": 240,
+    "wind_from_deg": 115.8,
+    "steadiness": 0.17,
+    "wind_hours": 1440
+   },
+   "karnataka:17.125,77.375": {
+    "ffmc_p90": 93.9,
+    "bui_p90": 336.8,
+    "ws_p90_kmh": 16.6,
+    "cell_days": 240,
+    "wind_from_deg": 133.1,
+    "steadiness": 0.06,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,75.625": {
+    "ffmc_p90": 96.6,
+    "bui_p90": 338.9,
+    "ws_p90_kmh": 28.4,
+    "cell_days": 240,
+    "wind_from_deg": 24.6,
+    "steadiness": 0.18,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,75.875": {
+    "ffmc_p90": 96.4,
+    "bui_p90": 365.1,
+    "ws_p90_kmh": 25.4,
+    "cell_days": 240,
+    "wind_from_deg": 49.7,
+    "steadiness": 0.14,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,76.125": {
+    "ffmc_p90": 96.4,
+    "bui_p90": 334.6,
+    "ws_p90_kmh": 20.2,
+    "cell_days": 240,
+    "wind_from_deg": 86.1,
+    "steadiness": 0.16,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,76.375": {
+    "ffmc_p90": 95.9,
+    "bui_p90": 324.4,
+    "ws_p90_kmh": 19.3,
+    "cell_days": 240,
+    "wind_from_deg": 105.1,
+    "steadiness": 0.23,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,76.625": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 296.8,
+    "ws_p90_kmh": 19.0,
+    "cell_days": 240,
+    "wind_from_deg": 113.3,
+    "steadiness": 0.25,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,76.875": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 311.6,
+    "ws_p90_kmh": 17.5,
+    "cell_days": 240,
+    "wind_from_deg": 119.6,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,77.125": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 295.0,
+    "ws_p90_kmh": 16.7,
+    "cell_days": 240,
+    "wind_from_deg": 139.2,
+    "steadiness": 0.15,
+    "wind_hours": 1440
+   },
+   "karnataka:17.375,77.375": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 286.7,
+    "ws_p90_kmh": 17.1,
+    "cell_days": 240,
+    "wind_from_deg": 120.4,
+    "steadiness": 0.08,
+    "wind_hours": 1440
+   },
+   "karnataka:17.625,76.375": {
+    "ffmc_p90": 96.2,
+    "bui_p90": 318.3,
+    "ws_p90_kmh": 18.2,
+    "cell_days": 240,
+    "wind_from_deg": 62.1,
+    "steadiness": 0.19,
+    "wind_hours": 1440
+   },
+   "karnataka:17.625,76.625": {
+    "ffmc_p90": 95.7,
+    "bui_p90": 307.3,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 62.8,
+    "steadiness": 0.2,
+    "wind_hours": 1440
+   },
+   "karnataka:17.625,76.875": {
+    "ffmc_p90": 95.1,
+    "bui_p90": 321.6,
+    "ws_p90_kmh": 17.1,
+    "cell_days": 240,
+    "wind_from_deg": 65.5,
+    "steadiness": 0.2,
+    "wind_hours": 1440
+   },
+   "karnataka:17.625,77.125": {
+    "ffmc_p90": 94.5,
+    "bui_p90": 283.2,
+    "ws_p90_kmh": 17.2,
+    "cell_days": 240,
+    "wind_from_deg": 49.7,
+    "steadiness": 0.16,
+    "wind_hours": 1440
+   },
+   "karnataka:17.625,77.375": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 282.8,
+    "ws_p90_kmh": 18.0,
+    "cell_days": 240,
+    "wind_from_deg": 31.7,
+    "steadiness": 0.17,
+    "wind_hours": 1440
+   },
+   "karnataka:17.875,76.875": {
+    "ffmc_p90": 95.2,
+    "bui_p90": 314.1,
+    "ws_p90_kmh": 17.1,
+    "cell_days": 240,
+    "wind_from_deg": 33.3,
+    "steadiness": 0.28,
+    "wind_hours": 1440
+   },
+   "karnataka:17.875,77.125": {
+    "ffmc_p90": 94.9,
+    "bui_p90": 291.0,
+    "ws_p90_kmh": 17.0,
+    "cell_days": 240,
+    "wind_from_deg": 22.6,
+    "steadiness": 0.27,
+    "wind_hours": 1440
+   },
+   "karnataka:17.875,77.375": {
+    "ffmc_p90": 94.6,
+    "bui_p90": 270.7,
+    "ws_p90_kmh": 16.9,
+    "cell_days": 240,
+    "wind_from_deg": 14.6,
+    "steadiness": 0.25,
+    "wind_hours": 1440
+   },
+   "karnataka:17.875,77.625": {
+    "ffmc_p90": 94.4,
+    "bui_p90": 278.9,
+    "ws_p90_kmh": 16.7,
+    "cell_days": 240,
+    "wind_from_deg": 21.9,
+    "steadiness": 0.26,
+    "wind_hours": 1440
+   },
+   "karnataka:18.125,76.875": {
+    "ffmc_p90": 95.4,
+    "bui_p90": 314.9,
+    "ws_p90_kmh": 16.3,
+    "cell_days": 240,
+    "wind_from_deg": 23.4,
+    "steadiness": 0.31,
+    "wind_hours": 1440
+   },
+   "karnataka:18.125,77.125": {
+    "ffmc_p90": 95.1,
+    "bui_p90": 288.1,
+    "ws_p90_kmh": 16.6,
+    "cell_days": 240,
+    "wind_from_deg": 22.9,
+    "steadiness": 0.32,
+    "wind_hours": 1440
+   },
+   "karnataka:18.125,77.375": {
+    "ffmc_p90": 94.8,
+    "bui_p90": 274.8,
+    "ws_p90_kmh": 16.2,
+    "cell_days": 240,
+    "wind_from_deg": 15.6,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:18.125,77.625": {
+    "ffmc_p90": 95.3,
+    "bui_p90": 288.4,
+    "ws_p90_kmh": 15.6,
+    "cell_days": 240,
+    "wind_from_deg": 348.1,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   },
+   "karnataka:18.375,77.375": {
+    "ffmc_p90": 95.3,
+    "bui_p90": 300.6,
+    "ws_p90_kmh": 15.3,
+    "cell_days": 240,
+    "wind_from_deg": 4.1,
+    "steadiness": 0.3,
+    "wind_hours": 1440
+   }
+  }
+ }
+}

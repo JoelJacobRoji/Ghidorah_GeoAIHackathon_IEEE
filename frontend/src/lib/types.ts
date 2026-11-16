@@ -353,18 +353,18 @@ export interface CorridorProps {
   rank: number
   score: number
   length_m: number
-  anchor: 'road' | 'waterway'
-  osm_class: string
-  name: string | null
-  osm_id: string
-  upwind_hazard: number
-  assets: number
-  orientation: number
-  access: number
+  forest_intensity_kw_m: number
+  intensity_class: 'low' | 'moderate' | 'high' | 'very high'
+  hazard: number
+  wind_into_forest: number
+  past_fires: number
+  human_pressure: number
+  forest_protected_km2: number
   terrain: number
   mean_slope_deg: number
-  burnable_share: number
-  settlements_protected: { name: string | null; subtype: string | null }[]
+  settlements_near: { name: string | null; subtype: string | null }[]
+  roads_near: string[]
+  anchor: { osm_id: string; class: string; name: string | null; share: number } | null
 }
 
 export interface FirebreakResult {
@@ -374,11 +374,16 @@ export interface FirebreakResult {
     center: [number, number]
     radius_km: number
     cell_id: string
-    wind: { from_deg: number; p90_kmh: number; mean_kmh: number; steadiness: number; hours: number; period_start: string }
-    dry_conditions: { ffmc_7d_max: number; bui_7d_max: number | null; isi: number; head_ros_m_min: Record<string, number> }
+    design: { seasons: string; wind_from_deg: number; steadiness: number; ws_p90_kmh: number; ffmc_p90: number; bui_p90: number; isi: number; intensity_kw_m: Record<string, number> }
+    human_zone: GeoJSON.Polygon | GeoJSON.MultiPolygon | null
     hazard_image: { url: string; bounds: [number, number, number, number] }
-    candidates_scored: number
+    edge_km_examined: number
+    line_km_proposed: number
     settlements_considered: number
+    roads_considered: number
+    empty_reason: string | null
+    fire_history: { years: number[]; detections_in_window: number; on_forest: number; source: string }
+    parameters: { ignition_buffer_m: number; min_forest_km2: number; min_intensity_kw_m: number; min_line_m: number; min_past_fires: number; fire_radius_m: number }
     fuel: { summary: Record<string, number>; period: [string, string]; retrieved_at: string }
     osm_retrieved_at: string
     method: string

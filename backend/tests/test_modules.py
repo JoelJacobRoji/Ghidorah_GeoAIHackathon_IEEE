@@ -123,31 +123,57 @@ def test_scenario_end_to_end_with_synthetic_inputs(monkeypatch):
 
 
 # ----------------------------------------------------------------------------- firebreaks
-def test_firebreak_ranks_crosswind_segment_between_fuel_and_village(monkeypatch, db):
-    lon0, lat0 = 76.5, 13.5
-    # wind FROM the west; forest west of x=0, village 2 km east.
-    monkeypatch.setattr(firebreak, "prevailing_wind", lambda db_, cid, now: {"from_deg": 270.0, "p90_kmh": 20.0, "mean_kmh": 12.0, "steadiness": 0.9, "hours": 60, "period_start": "2026-03-01"})
-
-    def fake_fuel(grid):
-        lons, _ = grid.centres()
-        f = np.where(lons < lon0, 3, 0).astype(np.int8)
-        return {"fuel": f, "obs": np.full(f.shape, 5.0), "retrieved_at": "x", "period": ["a", "b"]}
-
-    monkeypatch.setattr(firebreak, "fetch_fuel", fake_fuel)
+def _fb_setup(monkeypatch, lon0, fuel_fn, fires=None):
+    monkeypatch.setattr(firebreak, "design_conditions", lambda region, cid: {
+        "ffmc_p90": 93.0, "bui_p90": 110.0, "ws_p90_kmh": 22.0, "wind_from_deg": 90.0, "steadiness": 0.8, "isi": 14.0, "cell_days": 240})
+    monkeypatch.setattr(firebreak, "past_fires", lambda region, bbox: (fires or [], [2025, 2026]))
+    monkeypatch.setattr(firebreak, "fetch_fuel", lambda grid, period=None: {"fuel": fuel_fn(*grid.centres()), "obs": np.full((grid.ny, grid.nx), 5.0), "retrieved_at": "x", "period": ["a", "b"]})
     monkeypatch.setattr(firebreak, "sample_dem", lambda grid, z: np.zeros((grid.ny, grid.nx), np.float32))
     monkeypatch.setattr("incendium.geo.cell_for_point", lambda region, lon, lat: "karnataka:13.375,76.375")
-    with db.connect() as con:
-        con.execute("INSERT INTO fwi_daily(cell_id,date,ffmc,dmc,dc,isi,bui,fwi,dsr,fwi_class,is_forecast,spinup,status,computed_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    ("karnataka:13.375,76.375", datetime.now().date().isoformat(), 90, 30, 300, 8, 40, 20, 5, "High", 0, 0, "ok", "x"))
-    d = 0.01
-    north_south = {"id": "way/1", "kind": "road", "class": "track", "name": "Crosswind track", "coords": [(lon0 + 0.003, lat0 - d * 2), (lon0 + 0.003, lat0 + d * 2)]}
-    east_west = {"id": "way/2", "kind": "road", "class": "track", "name": "Along-wind track", "coords": [(lon0 + 0.003, lat0 - 0.03), (lon0 + 0.04, lat0 - 0.03)]}
-    village = [{"id": "node/9", "name": "Village", "subtype": "village", "lat": lat0, "lon": lon0 + 0.02}]
-    res = firebreak.recommend(db, ["karnataka"], lon0, lat0, 4, lambda bb: ([north_south, east_west], "t"), lambda bb: village)
+
+
+def test_firebreak_line_separates_road_zone_from_forest(monkeypatch, db):
+    lon0, lat0 = 76.5, 13.5
+    # Forest everywhere west of lon0 + 0.01; a N-S road and a village east of it; wind FROM the east (into the forest).
+    forest_fn = lambda lons, lats: np.where(lons < lon0 + 0.01, 3, 1).astype(np.int8)  # noqa: E731
+    fires = [(lon0 - 0.005, lat0 + k * 0.004) for k in range(-3, 4)]  # past forest fires just inside the forest edge
+    _fb_setup(monkeypatch, lon0, forest_fn, fires)
+    road = {"id": "way/1", "kind": "road", "class": "secondary", "name": "Forest road", "coords": [(lon0 + 0.012, lat0 - 0.1), (lon0 + 0.012, lat0 + 0.1)]}
+    track = {"id": "way/2", "kind": "road", "class": "track", "name": "Old track", "coords": [(lon0 + 0.0074, lat0 - 0.1), (lon0 + 0.0074, lat0 + 0.1)]}
+    village = [{"id": "node/9", "name": "Village", "subtype": "village", "lat": lat0, "lon": lon0 + 0.03}]
+    res = firebreak.recommend(db, ["karnataka"], lon0, lat0, 4, lambda bb: ([road, track], "t"), lambda bb: village)
+    assert res["features"], res["meta"]["empty_reason"]
     top = res["features"][0]["properties"]
-    assert top["name"] == "Crosswind track" and top["orientation"] > 0.9
-    assert top["settlements_protected"][0]["name"] == "Village"
+    xs = [c[0] for c in res["features"][0]["geometry"]["coordinates"]]
+    # the line runs N-S about 500 m west of the road, inside the forest
+    assert all(abs(x - (lon0 + 0.012 - 500 / (111320 * math.cos(math.radians(lat0))))) < 0.002 for x in xs)
+    assert top["length_m"] > 3000 and top["intensity_class"] in ("high", "very high")
+    assert top["wind_into_forest"] > 0.9
+    assert top["anchor"] and top["anchor"]["name"] == "Old track"
+    assert "Forest road" in top["roads_near"]
+    assert res["meta"]["human_zone"]["type"] in ("Polygon", "MultiPolygon")
+    assert top["past_fires"] >= 3
     assert res["meta"]["hazard_image"]["url"].startswith("data:image/png;base64,")
+    # same forest edge but no fire history -> not a high-risk area, no line
+    _fb_setup(monkeypatch, lon0, forest_fn, [])
+    res = firebreak.recommend(db, ["karnataka"], lon0, lat0, 4, lambda bb: ([road, track], "t"), lambda bb: village)
+    assert res["features"] == [] and "forest-fire detections" in res["meta"]["empty_reason"]
+
+
+def test_firebreak_none_without_forest_or_people(monkeypatch, db):
+    lon0, lat0 = 76.5, 13.5
+    _fb_setup(monkeypatch, lon0, lambda lons, lats: np.ones(lons.shape, np.int8))  # all grass
+    road = {"id": "way/1", "kind": "road", "class": "primary", "name": "R", "coords": [(lon0, lat0 - 0.1), (lon0, lat0 + 0.1)]}
+    res = firebreak.recommend(db, ["karnataka"], lon0, lat0, 4, lambda bb: ([road], "t"), lambda bb: [])
+    assert res["features"] == [] and "No forest edge" in res["meta"]["empty_reason"]
+    _fb_setup(monkeypatch, lon0, lambda lons, lats: np.full(lons.shape, 3, np.int8))  # forest, no roads
+    res = firebreak.recommend(db, ["karnataka"], lon0, lat0, 4, lambda bb: ([], "t"), lambda bb: [])
+    assert res["features"] == [] and "no motorable roads" in res["meta"]["empty_reason"]
+
+
+def test_forest_intensity_exceeds_grass_on_design_day():
+    i = firebreak.intensity_by_fuel(14.0, 93.0, 110.0)
+    assert i[0] == 0 and i[3] > i[1] > 0 and firebreak.intensity_class(float(i[3])) in ("high", "very high")
 
 
 # ----------------------------------------------------------------------------- alerts

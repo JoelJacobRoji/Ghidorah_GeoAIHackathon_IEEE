@@ -179,7 +179,7 @@ def _modules() -> dict:
         "monitoring": {"title": "Geospatial monitoring", "number": 2,
                        "summary": "Live map of risk zones, vegetation condition, model weather, wind and active satellite detections with provenance and freshness."},
         "firebreak": {"title": "Firebreak recommendation", "number": 3,
-                      "summary": "Ranks existing roads, tracks and waterways as candidate fuel-break anchors between hazardous fuel and downwind settlements.",
+                      "summary": "Proposes firebreak lines along the forest edge that separate the zone within 500 m of roads and settlements (where most fires are started by people) from large, high-intensity forest behind it.",
                       "method": doc(firebreak)},
         "spread": {"title": "Fire spread simulation", "number": 4,
                    "summary": "Illustrative hour-by-hour spread scenario from an ignition point using FBP fire-behaviour equations, Sentinel-2 fuel, terrain and hourly model weather.",

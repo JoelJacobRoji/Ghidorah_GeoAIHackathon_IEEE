@@ -31,13 +31,19 @@ const spread: SpreadResult = {
 const firebreaks: FirebreakResult = {
   type: 'FeatureCollection',
   features: [{ type: 'Feature', geometry: { type: 'LineString', coordinates: [[76, 13], [76.01, 13.01]] }, properties: {
-    rank: 1, score: 0.2, length_m: 1200, anchor: 'road', osm_class: 'track', name: 'Forest track', osm_id: 'way/9', upwind_hazard: 0.6, assets: 2, orientation: 0.9,
-    access: 1, terrain: 0.8, mean_slope_deg: 7, burnable_share: 0.7, settlements_protected: [{ name: 'Hosahalli', subtype: 'village' }] } }],
+    rank: 1, score: 0.2, length_m: 2400, forest_intensity_kw_m: 4800, intensity_class: 'very high', hazard: 1, wind_into_forest: 0.9, past_fires: 12, human_pressure: 0.7,
+    forest_protected_km2: 14.2, terrain: 0.8, mean_slope_deg: 7, settlements_near: [{ name: 'Hosahalli', subtype: 'village' }], roads_near: ['SH 33'],
+    anchor: { osm_id: 'way/9', class: 'track', name: 'Forest track', share: 0.6 } } }],
   meta: {
-    center: [76, 13], radius_km: 6, cell_id: 'c', wind: { from_deg: 270, p90_kmh: 18, mean_kmh: 11, steadiness: 0.8, hours: 60, period_start: '2026-03-01' },
-    dry_conditions: { ffmc_7d_max: 92, bui_7d_max: 40, isi: 10, head_ros_m_min: { grass: 20 } }, hazard_image: { url: 'data:image/png;base64,', bounds: [75.9, 12.9, 76.1, 13.1] },
-    candidates_scored: 300, settlements_considered: 40, fuel: { summary: {}, period: ['a', 'b'], retrieved_at: 'x' }, osm_retrieved_at: '2026-03-10T00:00:00Z',
-    method: 'score = ...', assumptions: ['Candidate corridors for field assessment only.'], generated_at: 'x',
+    center: [76, 13], radius_km: 6, cell_id: 'c',
+    design: { seasons: 'Feb–May 2025 and 2026', wind_from_deg: 270, steadiness: 0.8, ws_p90_kmh: 18, ffmc_p90: 93, bui_p90: 110, isi: 14, intensity_kw_m: { grass: 3700, shrub: 4400, forest: 5100 } },
+    human_zone: { type: 'Polygon', coordinates: [[[76, 13], [76.01, 13], [76.01, 13.01], [76, 13]]] },
+    hazard_image: { url: 'data:image/png;base64,', bounds: [75.9, 12.9, 76.1, 13.1] },
+    edge_km_examined: 40, line_km_proposed: 2.4, settlements_considered: 40, roads_considered: 12, empty_reason: null,
+    fire_history: { years: [2025, 2026], detections_in_window: 40, on_forest: 30, source: 'VIIRS' },
+    parameters: { ignition_buffer_m: 500, min_forest_km2: 5, min_intensity_kw_m: 2000, min_line_m: 1000, min_past_fires: 3, fire_radius_m: 2000 },
+    fuel: { summary: {}, period: ['a', 'b'], retrieved_at: 'x' }, osm_retrieved_at: '2026-03-10T00:00:00Z',
+    method: 'score = ...', assumptions: ['Proposed lines for field assessment only.'], generated_at: 'x',
   },
 }
 
@@ -91,15 +97,17 @@ describe('Spread simulation tool', () => {
 })
 
 describe('Firebreak tool', () => {
-  it('lists ranked corridors with their score components and protected settlements', async () => {
+  it('lists ranked forest-edge lines with their score components and nearby settlements', async () => {
     const onFocus = vi.fn()
     render(<FirebreakTool point={[76, 13]} radius={6} onRadius={() => {}} result={firebreaks} onResult={() => {}} showHazard onShowHazard={() => {}} onFocus={onFocus} onClose={() => {}} />)
-    const item = screen.getByRole('button', { name: /forest track/i })
-    expect(within(item).getByText(/Downwind: Hosahalli/)).toBeInTheDocument()
-    expect(within(item).getByTitle('Across the wind: 0.90')).toBeInTheDocument()
+    const item = screen.getByRole('button', { name: /line 1/i })
+    expect(within(item).getByText(/Hosahalli/)).toBeInTheDocument()
+    expect(within(item).getByText(/along Forest track/)).toBeInTheDocument()
+    expect(within(item).getByText(/12 past forest-fire detections/)).toBeInTheDocument()
+    expect(within(item).getByTitle('Wind into forest: 0.90')).toBeInTheDocument()
     await userEvent.click(item)
     expect(onFocus).toHaveBeenCalled()
-    expect(screen.getByText('Candidate corridors for field assessment only.')).toBeInTheDocument()
+    expect(screen.getByText('Proposed lines for field assessment only.')).toBeInTheDocument()
   })
 })
 

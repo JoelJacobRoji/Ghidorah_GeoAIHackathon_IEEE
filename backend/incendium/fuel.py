@@ -79,28 +79,47 @@ def classify(ndvi: np.ndarray, water_share: np.ndarray) -> np.ndarray:
     return fuel
 
 
-def _key(grid: Grid) -> str:
-    return hashlib.sha1(f"{grid.west:.4f},{grid.south:.4f},{grid.east:.4f},{grid.north:.4f},{grid.nx},{grid.ny}".encode()).hexdigest()[:16]
+def _key(grid: Grid, period: tuple[str, str] | None = None) -> str:
+    extra = f",{period[0]},{period[1]}" if period else ""
+    return hashlib.sha1(f"{grid.west:.4f},{grid.south:.4f},{grid.east:.4f},{grid.north:.4f},{grid.nx},{grid.ny}{extra}".encode()).hexdigest()[:16]
 
 
-def fetch_fuel(grid: Grid, cache_dir: Path | None = None) -> dict:
-    """Returns {"ndvi", "ndmi", "water_share", "obs", "fuel", "retrieved_at", "period"} for the grid."""
+def fire_season_period(today=None) -> tuple[str, str]:
+    """The latest completed dry season (1 Feb - 30 Apr), before pre-monsoon showers green the vegetation."""
+    from datetime import date
+
+    d = today or date.today()
+    y = d.year if (d.month, d.day) >= (5, 1) else d.year - 1
+    return (f"{y}-02-01", f"{y}-04-30")
+
+
+def fetch_fuel(grid: Grid, cache_dir: Path | None = None, period: tuple[str, str] | None = None) -> dict:
+    """Returns {"ndvi", "ndmi", "water_share", "obs", "fuel", "retrieved_at", "period"} for the grid.
+
+    period=None uses the last LOOKBACK_DAYS days; a fixed (from, to) period is cached indefinitely.
+    """
     cdir = cache_dir or CACHE_DIR
-    path = cdir / f"fuel_{_key(grid)}.npz"
+    path = cdir / f"fuel_{_key(grid, period)}.npz"
     if path.exists():
         z = np.load(path, allow_pickle=False)
         retrieved = str(z["retrieved_at"])
         from datetime import datetime
 
-        if utcnow() - datetime.fromisoformat(retrieved.replace("Z", "+00:00")) < CACHE_MAX_AGE:
+        if period or utcnow() - datetime.fromisoformat(retrieved.replace("Z", "+00:00")) < CACHE_MAX_AGE:
             return {k: z[k] for k in ("ndvi", "ndmi", "water_share", "obs", "fuel")} | {
                 "retrieved_at": retrieved, "period": [str(z["period_from"]), str(z["period_to"])], "cached": True}
 
     s = get_settings()
     if not (s.cdse_client_id and s.cdse_client_secret):
         raise ProviderError(cdse.PROVIDER, "credentials not configured")
-    end = utcnow()
-    start = end - timedelta(days=LOOKBACK_DAYS)
+    if period:
+        from datetime import datetime, timezone
+
+        start = datetime.fromisoformat(period[0]).replace(tzinfo=timezone.utc)
+        end = datetime.fromisoformat(period[1]).replace(tzinfo=timezone.utc)
+    else:
+        end = utcnow()
+        start = end - timedelta(days=LOOKBACK_DAYS)
     body = {
         "input": {
             "bounds": {"bbox": [grid.west, grid.south, grid.east, grid.north],
