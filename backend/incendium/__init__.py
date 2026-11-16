@@ -6,7 +6,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from .config import Settings, get_settings
+from .config import Settings, get_secret, get_settings
 from .db import Database
 from .ingest import Ingestor
 from .log import configure_logging, register_secret
@@ -17,7 +17,6 @@ def create_app(settings: Settings | None = None, db: Database | None = None, sta
     s = settings or get_settings()
     for secret in (s.firms_map_key, s.cdse_client_id, s.cdse_client_secret):
         register_secret(secret)
-    from .config import get_secret
 
     for name in ("INCENDIUM_SMTP_PASSWORD", "INCENDIUM_SMTP_USER", "INCENDIUM_ALERT_WEBHOOK_URL"):
         register_secret(get_secret(name))

@@ -426,7 +426,14 @@ class Ingestor:
             )
             con.executemany("INSERT INTO risk_snapshot(cell_id, date, payload, computed_at) VALUES (?,?,?,?)", out)
         self.db.finish_run(run, "ok", len(out), details={"dates": len(by_date)})
-        return {"status": "ok", "rows": len(out), "dates": len(by_date)}
+        res: dict = {"status": "ok", "rows": len(out), "dates": len(by_date)}
+        try:  # Fire Risk Index email alerts: watch the new values; never break the risk engine
+            from . import risk_alerts
+
+            res["risk_alerts"] = risk_alerts.evaluate(self.db, region)
+        except Exception:  # noqa: BLE001
+            log.exception("risk alert evaluation failed for %s", region)
+        return res
 
     def _attach_ml(self, region: str, out: list, ml_rows: list[dict], today) -> None:
         """Add the experimental ML detection likelihood (if a trained model exists) to each payload."""

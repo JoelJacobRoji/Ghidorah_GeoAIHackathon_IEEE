@@ -156,6 +156,36 @@ CREATE TABLE IF NOT EXISTS alerts (
     notify_status TEXT
 );
 CREATE INDEX IF NOT EXISTS ix_alerts_created ON alerts(created_at);
+
+-- Fire Risk Index email alerts (risk_alerts.py): one row per grid cell (area).
+CREATE TABLE IF NOT EXISTS risk_alert_state (
+    area_id              TEXT PRIMARY KEY,   -- risk-grid cell id
+    region               TEXT NOT NULL,
+    last_index           REAL,               -- last valid composite score seen
+    last_class           TEXT,
+    last_date            TEXT,               -- local date the score refers to
+    last_evaluated_at    TEXT NOT NULL,
+    alert_active         INTEGER NOT NULL DEFAULT 0,  -- 1 while the index stays at/above the threshold
+    last_notified_at     TEXT,
+    last_notified_index  REAL,
+    last_notified_class  TEXT,
+    threshold            REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS risk_alert_events (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at   TEXT NOT NULL,
+    region       TEXT NOT NULL,
+    area_ids     TEXT NOT NULL,              -- JSON list of cells in this notification
+    max_index    REAL,
+    threshold    REAL NOT NULL,
+    status       TEXT NOT NULL,              -- queued | sent | test | failed | suppressed_cooldown | disabled
+    recipients   INTEGER NOT NULL DEFAULT 0,
+    subject      TEXT,
+    message      TEXT,
+    finished_at  TEXT
+);
+CREATE INDEX IF NOT EXISTS ix_risk_events_created ON risk_alert_events(created_at);
 """
 
 

@@ -229,6 +229,15 @@ This is a descriptive association, not a test of predictive skill (see the limit
 - **Priority:** high when all three rules apply, medium for two, low for one.
 - **Persistent sources:** detections on at least 5 of the previous 10 days at the same spot are capped at low priority. This catches industrial sources and gas flares.
 - **Outlook:** a daily fire-weather outlook covers forecast cells in the top two FWI classes.
+
+**Fire Risk Index email alerts (extension of Module 5, `incendium/risk_alerts.py`).**
+- **Index watched:** the composite risk score (0–100) per 0.25° cell for today; the calculation is unchanged.
+- **When:** after every risk computation (every 3-hourly weather update and each vegetation update).
+- **Trigger:** previous value < `INCENDIUM_FIRE_ALERT_THRESHOLD` (default 75, the start of "Very High") ≤ current value. No repeat while the cell stays above; re-armed when it drops below; per-cell cooldown (`INCENDIUM_ALERT_COOLDOWN_HOURS`, default 12). No emails at startup. Cells crossing in the same update share one email.
+- **State:** `risk_alert_state` (per cell) and `risk_alert_events` (every notification attempt) in the SQLite database, so restarts do not re-send.
+- **Delivery:** SMTP on a background thread via `incendium/mailer.py`; failures are logged and recorded, never raised. `INCENDIUM_EMAIL_ENABLED` (default off) is the master switch for all alert email; `INCENDIUM_EMAIL_TEST_MODE=1` writes `.eml`/`.html` files to `backend/instance/outbox/` instead of sending.
+- **Secrets:** the SMTP app password is read from the environment only. On the VPS it lives in `/etc/incendium.env` (root:incendium, mode 640); locally in `backend/.env`. Both are outside git. See `backend/.env.example` for every setting.
+- **Try it:** `python -m incendium alert-test` (sample built from today's highest-index cells, marked [TEST], written to the outbox), `python -m incendium alert-test --send` (really sends), `python -m incendium alert-status` (configuration and state, no secrets).
 - **Fire stations:** each alert lists the nearest fire stations from OpenStreetMap.
 - **Notifications:** sent by email or webhook only to recipients configured in the environment, at most once every 15 min. Authorities are never contacted automatically.
 

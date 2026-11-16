@@ -28,15 +28,12 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
-import smtplib
-import ssl
 from datetime import datetime, timedelta, timezone
-from email.message import EmailMessage
 
 import numpy as np
 
-from . import places
-from .config import get_secret
+from . import mailer, places
+from .config import get_alert_settings, get_secret
 from .db import Database, iso, utcnow
 from .log import mask
 from .providers.http import make_client
@@ -244,8 +241,7 @@ def _store(db: Database, alerts: list[dict]) -> None:
 # ---------------------------------------------------------------------------- notifications
 def channel_config() -> dict:
     """Which channels are configured (presence only; never values)."""
-    smtp_keys = ("INCENDIUM_SMTP_HOST", "INCENDIUM_SMTP_USER", "INCENDIUM_SMTP_PASSWORD", "INCENDIUM_ALERT_EMAIL_TO")
-    email = all(get_secret(k) for k in smtp_keys)
+    email = get_alert_settings().can_send  # INCENDIUM_EMAIL_ENABLED + recipients + SMTP (or test mode)
     webhook = bool(get_secret("INCENDIUM_ALERT_WEBHOOK_URL"))
     min_p = (get_secret("INCENDIUM_ALERT_MIN_PRIORITY") or "medium").lower()
     return {"email": email, "webhook": webhook, "min_priority": min_p if min_p in PRIORITY_ORDER else "medium",
@@ -270,8 +266,8 @@ def notify_pending(db: Database) -> dict:
     if cfg["email"]:
         try:
             _send_email(pending)
-        except (OSError, smtplib.SMTPException) as exc:
-            errors.append(f"email: {mask(type(exc).__name__)}")
+        except mailer.MailError as exc:
+            errors.append(f"email: {mask(str(exc))}")
     if cfg["webhook"]:
         try:
             _send_webhook(pending)
@@ -287,28 +283,11 @@ def notify_pending(db: Database) -> dict:
 
 
 def _send_email(alerts: list[dict]) -> None:
-    host = get_secret("INCENDIUM_SMTP_HOST")
-    port = int(get_secret("INCENDIUM_SMTP_PORT") or 587)
-    user = get_secret("INCENDIUM_SMTP_USER")
-    pwd = get_secret("INCENDIUM_SMTP_PASSWORD")
-    to = [x.strip() for x in (get_secret("INCENDIUM_ALERT_EMAIL_TO") or "").split(",") if x.strip()]
-    sender = get_secret("INCENDIUM_SMTP_FROM") or user
-    msg = EmailMessage()
+    cfg = get_alert_settings()
     top = max(alerts, key=lambda a: PRIORITY_ORDER[a["priority"]])
-    msg["Subject"] = f"[Incendium] {len(alerts)} alert(s), highest {top['priority']}: {top['title']}"
-    msg["From"] = sender
-    msg["To"] = ", ".join(to)
-    msg.set_content("\n\n".join(f"[{a['priority'].upper()}] {a['message']}" for a in alerts))
-    ctx = ssl.create_default_context()
-    if port == 465:
-        with smtplib.SMTP_SSL(host, port, context=ctx, timeout=30) as s:
-            s.login(user, pwd)
-            s.send_message(msg)
-    else:
-        with smtplib.SMTP(host, port, timeout=30) as s:
-            s.starttls(context=ctx)
-            s.login(user, pwd)
-            s.send_message(msg)
+    subject = f"[Incendium] {len(alerts)} alert(s), highest {top['priority']}: {top['title']}"
+    body = "\n\n".join(f"[{a['priority'].upper()}] {a['message']}" for a in alerts) + f"\n\n{DISCLAIMER}\n{cfg.public_url}/alerts"
+    mailer.send(cfg, subject, body)
 
 
 def _send_webhook(alerts: list[dict]) -> None:

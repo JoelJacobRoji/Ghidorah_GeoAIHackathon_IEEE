@@ -114,3 +114,84 @@ def get_settings() -> Settings:
 def load_region_config() -> dict:
     with open(DATA_DIR / "regions.json", encoding="utf-8") as fh:
         return json.load(fh)
+
+
+# ---------------------------------------------------------------------------- risk alert email settings
+# Centralised configuration of the Fire Risk Index email alerts (risk_alerts.py).
+# Values come from the environment (VPS: /etc/incendium.env; laptop: backend/.env,
+# both outside git). Secrets (the SMTP password) are read only at send time via
+# get_secret() and never stored on this object.
+DEFAULT_FIRE_ALERT_THRESHOLD = 75.0  # lower bound of the composite "Very High" class (risk.COMPOSITE_CLASSES)
+DEFAULT_ALERT_COOLDOWN_HOURS = 12.0
+
+
+@dataclass(frozen=True)
+class AlertSettings:
+    fire_alert_threshold: float          # FIRE_ALERT_THRESHOLD, composite score 0-100
+    alert_recipients: tuple[str, ...]    # ALERT_RECIPIENTS
+    email_sender: str | None             # EMAIL_SENDER
+    alert_cooldown_hours: float          # ALERT_COOLDOWN
+    email_enabled: bool                  # EMAIL_ENABLED
+    email_test_mode: bool                # EMAIL_TEST_MODE
+    smtp_host: str | None
+    smtp_port: int
+    smtp_user: str | None
+    public_url: str
+
+    @property
+    def smtp_ready(self) -> bool:
+        return bool(self.smtp_host and self.smtp_user and get_secret("INCENDIUM_SMTP_PASSWORD") and self.alert_recipients)
+
+    @property
+    def can_send(self) -> bool:
+        """True when an alert would be delivered (or simulated in test mode)."""
+        return self.email_enabled and bool(self.alert_recipients) and (self.email_test_mode or self.smtp_ready)
+
+
+def _recipients() -> tuple[str, ...]:
+    raw = get_secret("INCENDIUM_ALERT_EMAIL_TO") or ""
+    out = [x.strip() for x in raw.replace(";", ",").split(",") if x.strip()]
+    path = get_secret("INCENDIUM_ALERT_RECIPIENTS_FILE")
+    if path and Path(path).exists():
+        for line in Path(path).read_text(encoding="utf-8").splitlines():
+            line = line.split("#", 1)[0].strip()
+            if line:
+                out.append(line)
+    seen: list[str] = []
+    for a in out:
+        if "@" in a and a.lower() not in (x.lower() for x in seen):
+            seen.append(a)
+    return tuple(seen)
+
+
+def get_alert_settings() -> AlertSettings:
+    """Read fresh on every call, so a changed environment needs only a service restart."""
+    raw_thr = _env("INCENDIUM_FIRE_ALERT_THRESHOLD")
+    try:
+        thr = float(raw_thr) if raw_thr not in (None, "") else DEFAULT_FIRE_ALERT_THRESHOLD
+    except ValueError:
+        thr = DEFAULT_FIRE_ALERT_THRESHOLD
+    if not (0.0 < thr <= 100.0):
+        thr = DEFAULT_FIRE_ALERT_THRESHOLD
+    raw_cd = _env("INCENDIUM_ALERT_COOLDOWN_HOURS")
+    try:
+        cooldown = max(0.0, float(raw_cd)) if raw_cd not in (None, "") else DEFAULT_ALERT_COOLDOWN_HOURS
+    except ValueError:
+        cooldown = DEFAULT_ALERT_COOLDOWN_HOURS
+    try:
+        port = int(get_secret("INCENDIUM_SMTP_PORT") or 587)
+    except ValueError:
+        port = 587
+    user = get_secret("INCENDIUM_SMTP_USER")
+    return AlertSettings(
+        fire_alert_threshold=thr,
+        alert_recipients=_recipients(),
+        email_sender=get_secret("INCENDIUM_SMTP_FROM") or user,
+        alert_cooldown_hours=cooldown,
+        email_enabled=_bool("INCENDIUM_EMAIL_ENABLED", False),
+        email_test_mode=_bool("INCENDIUM_EMAIL_TEST_MODE", False),
+        smtp_host=get_secret("INCENDIUM_SMTP_HOST"),
+        smtp_port=port,
+        smtp_user=user,
+        public_url=(_env("INCENDIUM_PUBLIC_URL") or "https://162.35.42.114").rstrip("/"),
+    )

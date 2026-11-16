@@ -14,6 +14,8 @@
     python -m incendium alerts                             # evaluate alert rules now
     python -m incendium ml-train [--region karnataka]      # train on 2025, test on 2026
     python -m incendium firebreak-design [--region karnataka]  # fire-season design wind/dryness per cell
+    python -m incendium alert-status                       # Fire Risk Index email alerts: config + state (no secrets)
+    python -m incendium alert-test [--send] [--areas 2]    # sample alert email marked [TEST]; outbox unless --send
 """
 from __future__ import annotations
 
@@ -22,7 +24,7 @@ import json
 import logging
 import sys
 
-from .config import get_settings
+from .config import get_secret, get_settings
 from .db import Database
 from .ingest import Ingestor
 from .log import configure_logging, register_secret
@@ -32,7 +34,7 @@ log = logging.getLogger("incendium")
 
 def _ingestor() -> Ingestor:
     s = get_settings()
-    for secret in (s.firms_map_key, s.cdse_client_id, s.cdse_client_secret):
+    for secret in (s.firms_map_key, s.cdse_client_id, s.cdse_client_secret, get_secret("INCENDIUM_SMTP_PASSWORD")):
         register_secret(secret)
     ing = Ingestor(Database(s.db_path), s)
     ing.sync_cells()
@@ -77,13 +79,18 @@ def main(argv: list[str] | None = None) -> int:
     mt.add_argument("--region", default="karnataka")
     fd = sub.add_parser("firebreak-design", help="fire-season design wind and dryness per cell (for firebreak planning)")
     fd.add_argument("--region", default="karnataka")
+    sub.add_parser("alert-status", help="Fire Risk Index email alert configuration and state (no secrets)")
+    at = sub.add_parser("alert-test", help="build a sample risk alert email marked [TEST]")
+    at.add_argument("--region", default="karnataka")
+    at.add_argument("--areas", type=int, default=2)
+    at.add_argument("--send", action="store_true", help="really send via SMTP (default: write to instance/outbox)")
     args = p.parse_args(argv)
 
     if args.cmd == "calibrate-fwi":
         return _calibrate(args.region, args.start, args.end)
-    if args.cmd in ("terrain", "places", "alerts", "ml-train", "firebreak-design"):
+    if args.cmd in ("terrain", "places", "alerts", "ml-train", "firebreak-design", "alert-status", "alert-test"):
         s0 = get_settings()
-        for secret in (s0.firms_map_key, s0.cdse_client_id, s0.cdse_client_secret):
+        for secret in (s0.firms_map_key, s0.cdse_client_id, s0.cdse_client_secret, get_secret("INCENDIUM_SMTP_PASSWORD")):
             register_secret(secret)
         db0 = Database(s0.db_path)
         Ingestor(db0, s0).sync_cells()
@@ -96,6 +103,14 @@ def main(argv: list[str] | None = None) -> int:
 
             _print(refresh(db0, list(s0.risk_regions)))
             _print(counts(db0))
+        elif args.cmd == "alert-status":
+            from .risk_alerts import status
+
+            _print(status(db0))
+        elif args.cmd == "alert-test":
+            from .risk_alerts import send_test
+
+            _print(send_test(db0, args.region, really_send=args.send, n=max(1, args.areas)))
         elif args.cmd == "firebreak-design":
             from .firebreak_design import build
 
@@ -120,7 +135,7 @@ def main(argv: list[str] | None = None) -> int:
         from .validation import ValidationConfig, Validator, to_markdown
 
         s = get_settings()
-        for secret in (s.firms_map_key, s.cdse_client_id, s.cdse_client_secret):
+        for secret in (s.firms_map_key, s.cdse_client_id, s.cdse_client_secret, get_secret("INCENDIUM_SMTP_PASSWORD")):
             register_secret(secret)
         from .validation import IncompleteData
 
