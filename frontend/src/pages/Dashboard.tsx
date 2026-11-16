@@ -15,6 +15,7 @@ import { useFwiClasses } from '../lib/fwiClasses'
 import { fmtDate, fmtIst, timeAgo } from '../lib/format'
 import { hasWebGL, MOTION, useReducedMotion } from '../lib/motion'
 import { setFireStations, setFirebreakOverlay, setSpreadOverlay, setToolPoint } from '../lib/overlays'
+import type { Basemap } from '../lib/mapStyle'
 import type { DetectionProps, FirebreakResult, HotspotsResponse, RegionsResponse, RiskMapResponse, SpreadResult, StationRef, WeatherResponse } from '../lib/types'
 
 const MapView = lazy(() => import('../components/MapView'))
@@ -181,6 +182,7 @@ export default function Dashboard() {
     if (d) setCell(null)
   }, [])
 
+  const [basemap, setBasemapChoice] = useState<Basemap>('map')
   const toggle = (k: keyof LayerToggles) => setLayers((l) => ({ ...l, [k]: !l[k] }))
   const dates = risk.data?.meta.available_dates ?? []
   const activeDate = risk.data?.meta.date ?? null
@@ -213,6 +215,7 @@ export default function Dashboard() {
             layers={layers}
             metric={metric}
             mode3d={mode3d}
+            basemap={basemap}
             selectedCellId={cell}
             selectedDetectionId={det?.id ?? null}
             onSelectCell={selectCell}
@@ -297,6 +300,22 @@ export default function Dashboard() {
                     </label>
                   ))}
                 </div>
+              </fieldset>
+              <fieldset>
+                <legend className="eyebrow text-graphite-500">Basemap</legend>
+                <div className="mt-2 grid grid-cols-2 gap-1" role="radiogroup" aria-label="Basemap">
+                  {(
+                    [
+                      ['map', 'Map'],
+                      ['satellite', 'Satellite'],
+                    ] as const
+                  ).map(([k, label]) => (
+                    <button key={k} type="button" role="radio" aria-checked={basemap === k} onClick={() => setBasemapChoice(k)} className={`rounded-lg px-1.5 py-1 text-[11.5px] font-medium ${basemap === k ? 'bg-graphite-800 text-ivory' : 'bg-graphite-900/6 hover:bg-graphite-900/10'}`}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {basemap === 'satellite' && <p className="mt-1.5 text-[10.5px] text-graphite-500">Sentinel-2 cloudless 2024 mosaic (EOX). Turn off the risk grid to see the ground clearly.</p>}
               </fieldset>
               <fieldset>
                 <legend className="eyebrow text-graphite-500">Layers</legend>

@@ -7,7 +7,8 @@ import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&ur
 maplibregl.setWorkerUrl(maplibreWorkerUrl)
 import { useEffect, useRef, useState } from 'react'
 import { fmtIst } from '../lib/format'
-import { addTerrainSources, applySky, loadIncendiumStyle, setTerrain, windArrowImage } from '../lib/mapStyle'
+import { addSatelliteLayer, addTerrainSources, applySky, loadIncendiumStyle, setBasemap, setTerrain, windArrowImage } from '../lib/mapStyle'
+import type { Basemap } from '../lib/mapStyle'
 import { MOTION, prefersReducedMotion } from '../lib/motion'
 import { classColorExpression, COMPOSITE_CLASSES, DETECTION_COLOR, FWI_CLASSES, ML_STOPS, NDMI_RAMP, NO_DATA_COLOR } from '../lib/risk'
 import type { DetectionProps, HotspotsResponse, Region, RiskMapResponse, WeatherResponse } from '../lib/types'
@@ -38,6 +39,8 @@ interface Props {
   layers: LayerToggles
   metric: Metric
   mode3d: boolean
+  /** Background imagery; defaults to the vector map. */
+  basemap?: Basemap
   selectedCellId?: string | null
   selectedDetectionId?: string | null
   onSelectCell?: (id: string | null) => void
@@ -120,6 +123,7 @@ export default function MapView(props: Props) {
         created.on('load', () => {
           const m = created
           addTerrainSources(m)
+          addSatelliteLayer(m)
           applySky(m)
           const labelFont = (m.getStyle().layers.find((l) => l.type === 'symbol' && (l.layout as Record<string, unknown> | undefined)?.['text-font']) as
             | { layout: { 'text-font': string[] } }
@@ -457,6 +461,12 @@ export default function MapView(props: Props) {
     m.setLayoutProperty('wind', 'visibility', vis(layers.wind))
     for (const id of ['outline-casing', 'outline-line']) m.setLayoutProperty(id, 'visibility', vis(layers.outline))
   }, [ready, props.layers, props.metric, props.mode3d])
+
+  useEffect(() => {
+    const m = mapRef.current
+    if (!ready || !m) return
+    setBasemap(m, props.basemap ?? 'map')
+  }, [ready, props.basemap])
 
   useEffect(() => {
     const m = mapRef.current

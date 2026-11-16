@@ -1,4 +1,4 @@
-import type { Map as MLMap, StyleSpecification } from 'maplibre-gl'
+import type { DataDrivenPropertyValueSpecification, Map as MLMap, StyleSpecification } from 'maplibre-gl'
 
 export const BASEMAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/positron'
 export const TERRAIN_TILEJSON = 'https://tiles.mapterhorn.com/tilejson.json'
@@ -70,6 +70,56 @@ export async function loadIncendiumStyle(signal?: AbortSignal): Promise<StyleSpe
     }
   }
   return style
+}
+
+export type Basemap = 'map' | 'satellite'
+
+/** EOX Sentinel-2 cloudless 2024 mosaic (CC BY-NC-SA 4.0, attribution required). */
+export const SATELLITE_TILES = 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg'
+export const SATELLITE_ATTRIBUTION =
+  '<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless 2024</a> by EOX IT Services GmbH (contains modified Copernicus Sentinel data 2024)'
+
+/**
+ * Add the satellite imagery layer (hidden) above the basemap's area fills and below
+ * its roads, boundaries and labels, so every overlay still draws on top of it.
+ */
+export function addSatelliteLayer(map: MLMap) {
+  if (map.getLayer('satellite')) return
+  map.addSource('satellite', {
+    type: 'raster',
+    tiles: [SATELLITE_TILES],
+    tileSize: 256,
+    maxzoom: 17,
+    attribution: SATELLITE_ATTRIBUTION,
+  })
+  const before = map.getStyle().layers.find((l) => l.type === 'line' || l.type === 'symbol')?.id
+  map.addLayer({ id: 'satellite', type: 'raster', source: 'satellite', layout: { visibility: 'none' }, paint: { 'raster-fade-duration': 200 } }, before)
+}
+
+type LabelPaint = { color: DataDrivenPropertyValueSpecification<string> | undefined; halo: DataDrivenPropertyValueSpecification<string> | undefined }
+const labelOriginals = new WeakMap<MLMap, Map<string, LabelPaint>>()
+
+/** Switch between the editorial vector basemap and satellite imagery. */
+export function setBasemap(map: MLMap, basemap: Basemap) {
+  const sat = basemap === 'satellite'
+  if (map.getLayer('satellite')) map.setLayoutProperty('satellite', 'visibility', sat ? 'visible' : 'none')
+  if (map.getLayer('hillshade')) map.setLayoutProperty('hillshade', 'visibility', sat ? 'none' : 'visible')
+  let originals = labelOriginals.get(map)
+  if (!originals) {
+    originals = new Map()
+    labelOriginals.set(map, originals)
+  }
+  for (const layer of map.getStyle().layers) {
+    if (layer.type !== 'symbol' || !(layer.layout as Record<string, unknown> | undefined)?.['text-field']) continue
+    // Only basemap labels: our own symbol layers keep their styling.
+    if (layer.source !== 'openmaptiles') continue
+    if (!originals.has(layer.id)) {
+      originals.set(layer.id, { color: map.getPaintProperty(layer.id, 'text-color'), halo: map.getPaintProperty(layer.id, 'text-halo-color') })
+    }
+    const o = originals.get(layer.id)!
+    map.setPaintProperty(layer.id, 'text-color', sat ? '#f4f1ea' : o.color)
+    map.setPaintProperty(layer.id, 'text-halo-color', sat ? 'rgba(20,24,26,0.85)' : o.halo)
+  }
 }
 
 /** Add DEM sources (terrain + hillshade) using Mapterhorn terrarium tiles. */
