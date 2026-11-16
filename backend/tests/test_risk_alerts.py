@@ -210,3 +210,47 @@ def test_settings_from_environment(monkeypatch, tmp_path):
     assert s.alert_recipients == ("a@example.org", "c@example.org", "b@example.org") and s.fire_alert_threshold == 60
     monkeypatch.setenv("INCENDIUM_FIRE_ALERT_THRESHOLD", "abc")
     assert get_alert_settings().fire_alert_threshold == 75.0        # invalid -> safe default
+
+
+# ----------------------------------------------------------------------------- operator actions (ack + manual email)
+def test_operator_key_guards_ack_and_manual_email(client, db, cfg, monkeypatch):
+    from incendium import alerts, api_ops
+
+    monkeypatch.setattr("incendium.config.get_alert_settings", lambda: cfg)
+    monkeypatch.setattr(alerts, "get_alert_settings", lambda: cfg)
+    api_ops._op_fails.clear()
+    api_ops._manual_sends.clear()
+    alerts._store(db, [{"id": "a1", "kind": "detection", "priority": "high", "title": "Thermal anomaly near X", "message": "3 detections near X",
+                        "lat": 13, "lon": 76, "state": "Karnataka", "cell_id": None, "payload": {"rules": []}}])
+    web = {"X-Real-IP": "203.0.113.5"}  # as forwarded by nginx
+
+    monkeypatch.delenv("INCENDIUM_OPERATOR_KEY", raising=False)
+    r = client.post("/api/alerts/a1/ack", headers=web)
+    assert r.status_code == 403 and r.get_json()["error"] == "operator_disabled"
+    assert client.get("/api/alerts").get_json()["operator_actions"] is False
+
+    monkeypatch.setenv("INCENDIUM_OPERATOR_KEY", "correct-horse-battery")
+    assert client.get("/api/alerts").get_json()["operator_actions"] is True
+    assert client.post("/api/alerts/a1/ack", headers=web).get_json()["error"] == "operator_key_required"
+    assert client.post("/api/alerts/a1/ack", headers={**web, "X-Operator-Key": "wrong-key-123"}).status_code == 401
+    ok = {**web, "X-Operator-Key": "correct-horse-battery"}
+    assert client.post("/api/operator/check", headers=ok).status_code == 200
+
+    r = client.post("/api/alerts/a1/notify", headers=ok)
+    assert r.status_code == 200 and r.get_json()["recipients"] == 2
+    assert len(FakeSMTP.sent) == 1 and sorted(FakeSMTP.sent[0][1]) == ["forest@example.org", "ops@example.org"]
+    assert "Thermal anomaly near X" in FakeSMTP.sent[0][0]["Subject"]
+    assert db.one("SELECT notify_status FROM alerts WHERE id='a1'")["notify_status"].startswith("sent manually")
+    assert client.post("/api/alerts/a1/notify", headers=ok).status_code == 429          # per-alert rate limit
+    assert client.post("/api/alerts/a1/ack", headers=ok).status_code == 200
+    assert client.post("/api/alerts/nope/notify", headers=ok).status_code == 404
+
+    monkeypatch.setattr("incendium.config.get_alert_settings", lambda: replace(cfg, email_enabled=False))
+    alerts._store(db, [{"id": "a2", "kind": "detection", "priority": "low", "title": "t", "message": "m", "lat": 13, "lon": 76,
+                        "state": None, "cell_id": None, "payload": {}}])
+    assert client.post("/api/alerts/a2/notify", headers=ok).get_json()["error"] == "email_disabled"
+
+    other = {"X-Real-IP": "198.51.100.9", "X-Operator-Key": "guess-000000"}
+    codes = [client.post("/api/operator/check", headers=other).status_code for _ in range(9)]
+    assert codes[:8] == [401] * 8 and codes[8] == 429                               # lockout after repeated wrong keys
+    assert client.post("/api/operator/check", headers=ok).status_code == 200         # other clients unaffected

@@ -282,12 +282,12 @@ def notify_pending(db: Database) -> dict:
     return {"sent": len(pending) if status == "sent" else 0, "status": status, "errors": errors}
 
 
-def _send_email(alerts: list[dict]) -> None:
+def _send_email(alerts: list[dict]) -> dict:
     cfg = get_alert_settings()
     top = max(alerts, key=lambda a: PRIORITY_ORDER[a["priority"]])
     subject = f"[Incendium] {len(alerts)} alert(s), highest {top['priority']}: {top['title']}"
     body = "\n\n".join(f"[{a['priority'].upper()}] {a['message']}" for a in alerts) + f"\n\n{DISCLAIMER}\n{cfg.public_url}/alerts"
-    mailer.send(cfg, subject, body)
+    return mailer.send(cfg, subject, body)
 
 
 def _send_webhook(alerts: list[dict]) -> None:

@@ -157,6 +157,7 @@ def list_alerts():
         "total": total,
         "summary": {r["priority"]: {"total": r["n"], "open": r["open"]} for r in summary},
         "channels": alerts_mod.channel_config(),
+        "operator_actions": _operator_key() is not None,
         "rules": alerts_mod.__doc__.split("Detection rules")[1].strip() if alerts_mod.__doc__ else "",
         "disclaimer": alerts_mod.DISCLAIMER,
         "last_evaluation": _last_eval(),
@@ -168,16 +169,121 @@ def _last_eval():
     return dict(r) if r else None
 
 
+# --------------------------------------------------------------------------- operator actions
+# Acknowledging alerts and sending an alert email by hand change state or contact people, and
+# the site has no user accounts. They therefore need the operator key (INCENDIUM_OPERATOR_KEY,
+# set only in the server environment) in the X-Operator-Key header. Direct requests from the
+# machine itself (local development, no proxy headers) are allowed without a key.
+OPERATOR_KEY_MIN_LEN = 12
+OPERATOR_MAX_FAILS = 8
+OPERATOR_FAIL_WINDOW = timedelta(minutes=15)
+MANUAL_EMAIL_PER_ALERT = timedelta(minutes=10)
+MANUAL_EMAIL_PER_HOUR = 20
+_op_lock = threading.Lock()
+_op_fails: dict[str, list[datetime]] = {}
+_manual_sends: list[datetime] = []
+
+
+def _operator_key() -> str | None:
+    from .config import get_secret
+
+    k = get_secret("INCENDIUM_OPERATOR_KEY")
+    return k if k and len(k) >= OPERATOR_KEY_MIN_LEN else None
+
+
+def _client_ip() -> str:
+    return (request.headers.get("X-Real-IP") or request.remote_addr or "?").strip()
+
+
+def _operator_denied():
+    """None when the request may perform operator actions, otherwise an error response."""
+    import hmac
+
+    proxied = bool(request.headers.get("X-Real-IP") or request.headers.get("X-Forwarded-For"))
+    if request.remote_addr in ("127.0.0.1", "::1") and not proxied:
+        return None
+    ip, now = _client_ip(), utcnow()
+    with _op_lock:
+        recent = [t for t in _op_fails.get(ip, []) if now - t < OPERATOR_FAIL_WINDOW]
+        _op_fails[ip] = recent
+        if len(recent) >= OPERATOR_MAX_FAILS:
+            return jsonify({"error": "locked", "message": "Too many wrong operator keys. Try again in 15 minutes."}), 429
+    key = _operator_key()
+    if not key:
+        return jsonify({"error": "operator_disabled",
+                        "message": "Operator actions are switched off on this server (INCENDIUM_OPERATOR_KEY is not set)."}), 403
+    given = request.headers.get("X-Operator-Key", "")
+    if not given:
+        return jsonify({"error": "operator_key_required", "message": "Enter the operator key to acknowledge alerts or send emails."}), 401
+    if not hmac.compare_digest(given.encode("utf-8"), key.encode("utf-8")):
+        with _op_lock:
+            _op_fails.setdefault(ip, []).append(now)
+        current_app.logger.warning("wrong operator key from %s", ip)
+        return jsonify({"error": "invalid_operator_key", "message": "That operator key is not correct."}), 401
+    return None
+
+
+@bp.post("/operator/check")
+def operator_check():
+    denied = _operator_denied()
+    return denied if denied else jsonify({"status": "ok"})
+
+
 @bp.post("/alerts/<alert_id>/ack")
 def ack_alert(alert_id: str):
-    if request.remote_addr not in ("127.0.0.1", "::1"):
-        return jsonify({"error": "forbidden", "message": "Acknowledging alerts is only available locally."}), 403
+    denied = _operator_denied()
+    if denied:
+        return denied
     db = _db()
     if not db.one("SELECT id FROM alerts WHERE id=?", (alert_id,)):
         return jsonify({"error": "not_found", "message": "Unknown alert."}), 404
     with db.connect() as con:
         con.execute("UPDATE alerts SET acknowledged_at=COALESCE(acknowledged_at, ?) WHERE id=?", (iso(utcnow()), alert_id))
     return jsonify({"status": "ok", "id": alert_id})
+
+
+@bp.post("/alerts/<alert_id>/notify")
+def notify_alert(alert_id: str):
+    """Email one alert now to the configured recipients (operator only, rate limited)."""
+    from . import mailer
+    from .config import get_alert_settings
+
+    denied = _operator_denied()
+    if denied:
+        return denied
+    db = _db()
+    row = db.one("SELECT * FROM alerts WHERE id=?", (alert_id,))
+    if not row:
+        return jsonify({"error": "not_found", "message": "Unknown alert."}), 404
+    cfg = get_alert_settings()
+    if not cfg.email_enabled:
+        return jsonify({"error": "email_disabled", "message": "Email is switched off on this server (INCENDIUM_EMAIL_ENABLED=0)."}), 409
+    if not cfg.can_send:
+        return jsonify({"error": "email_not_configured", "message": "Email is not fully configured on this server (sender, password or recipients missing)."}), 409
+    now = utcnow()
+    if row["notified_at"] and (row["notify_status"] or "").startswith("sent manually"):
+        ago = now - datetime.fromisoformat(row["notified_at"].replace("Z", "+00:00"))
+        if ago < MANUAL_EMAIL_PER_ALERT:
+            mins = max(1, int((MANUAL_EMAIL_PER_ALERT - ago).total_seconds() // 60) + 1)
+            return jsonify({"error": "rate_limited", "message": f"This alert was just emailed. You can send it again in {mins} min."}), 429
+    with _op_lock:
+        _manual_sends[:] = [t for t in _manual_sends if now - t < timedelta(hours=1)]
+        if len(_manual_sends) >= MANUAL_EMAIL_PER_HOUR:
+            return jsonify({"error": "rate_limited", "message": f"At most {MANUAL_EMAIL_PER_HOUR} manual emails per hour. Try again later."}), 429
+        _manual_sends.append(now)
+    try:
+        res = alerts_mod._send_email([dict(row)])
+    except mailer.MailError as exc:
+        with db.connect() as con:
+            con.execute("UPDATE alerts SET notify_status=? WHERE id=?", (f"manual send failed: {exc}"[:200], alert_id))
+        current_app.logger.error("manual alert email failed: %s", exc)
+        return jsonify({"error": "send_failed", "message": f"The email could not be sent: {exc}"}), 502
+    status = (f"sent manually to {res['recipients']} recipient(s)" if res["status"] == "sent"
+              else f"test mode: written to outbox for {res['recipients']} recipient(s)")
+    with db.connect() as con:
+        con.execute("UPDATE alerts SET notified_at=?, notify_status=? WHERE id=?", (iso(now), status, alert_id))
+    current_app.logger.info("alert %s emailed manually (%s)", alert_id, res["status"])
+    return jsonify({"status": res["status"], "recipients": res["recipients"], "notify_status": status})
 
 
 # --------------------------------------------------------------------------- places

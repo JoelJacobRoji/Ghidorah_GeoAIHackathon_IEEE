@@ -33,12 +33,21 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
   return body as T
 }
 
-export async function apiPost<T>(path: string, payload?: unknown, signal?: AbortSignal): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    method: 'POST',
-    signal,
-    ...(payload === undefined ? {} : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
-  })
+export async function apiPost<T>(path: string, payload?: unknown, signal?: AbortSignal, extraHeaders?: Record<string, string>): Promise<T> {
+  const headers: Record<string, string> = { ...(extraHeaders ?? {}) }
+  if (payload !== undefined) headers['Content-Type'] = 'application/json'
+  let res: Response
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      method: 'POST',
+      signal,
+      headers,
+      ...(payload === undefined ? {} : { body: JSON.stringify(payload) }),
+    })
+  } catch (e) {
+    if ((e as Error).name === 'AbortError') throw e
+    throw new ApiError(0, 'network_error', 'The Incendium backend could not be reached.')
+  }
   const body = (await res.json().catch(() => ({}))) as { error?: string; message?: string }
   if (!res.ok) throw new ApiError(res.status, body.error ?? 'http_error', body.message ?? `Request failed (${res.status}).`)
   return body as T

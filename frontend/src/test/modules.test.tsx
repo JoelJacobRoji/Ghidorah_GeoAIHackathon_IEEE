@@ -55,11 +55,12 @@ const alerts: AlertsResponse = {
     fire_stations: [{ id: 'way/2', name: 'Town Fire Station', lat: 13.1, lon: 76.1, distance_km: 14.2, phone: '101', osm_url: 'https://www.openstreetmap.org/way/2' }],
   }],
   summary: { high: { total: 1, open: 1 } },
-  channels: { email: false, webhook: false, min_priority: 'medium', automatic_authority_contact: false },
+  channels: { email: true, webhook: false, min_priority: 'medium', automatic_authority_contact: false },
+  operator_actions: true,
   rules: 'R1 near settlement ...', disclaimer: 'Not an official warning.', last_evaluation: null,
 }
 
-let posted: { url: string; body: unknown }[] = []
+let posted: { url: string; body: unknown; key?: string }[] = []
 beforeEach(() => {
   invalidate()
   posted = []
@@ -67,10 +68,16 @@ beforeEach(() => {
     const url = String(input)
     let body: unknown = {}
     let status = 200
-    if (init?.method === 'POST') posted.push({ url, body: init.body ? JSON.parse(String(init.body)) : undefined })
+    const key = (init?.headers as Record<string, string> | undefined)?.['X-Operator-Key']
+    if (init?.method === 'POST') posted.push({ url, body: init.body ? JSON.parse(String(init.body)) : undefined, key })
     if (url.startsWith('/api/simulate/spread')) body = spread
     else if (url.startsWith('/api/firebreaks')) body = firebreaks
+    else if (url === '/api/operator/check') {
+      if (key !== 'right-key-123') { status = 401; body = { error: 'invalid_operator_key', message: 'That operator key is not correct.' } }
+      else body = { status: 'ok' }
+    }
     else if (url.startsWith('/api/alerts') && url.includes('/ack')) body = { status: 'ok' }
+    else if (url.startsWith('/api/alerts') && url.includes('/notify')) body = { status: 'sent', recipients: 2 }
     else if (url.startsWith('/api/alerts')) body = alerts
     else if (url.startsWith('/api/ml/report')) { status = 404; body = { error: 'not_found', message: 'No model.' } }
     else if (url.startsWith('/api/providers/status')) body = { providers: [] }
@@ -119,8 +126,23 @@ describe('Alerts page', () => {
     expect(screen.getByText(/Automatic contact with authorities: never/)).toBeInTheDocument()
     expect(screen.getByText('101')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /simulate spread/i })).toHaveAttribute('href', expect.stringContaining('tool=spread'))
+    // locked: the action explains what is needed instead of failing with a bare status code
     await userEvent.click(screen.getByRole('button', { name: /acknowledge/i }))
-    expect(posted.some((p) => p.url === '/api/alerts/det-1/ack')).toBe(true)
+    expect(await screen.findByText(/Unlock operator actions above/)).toBeInTheDocument()
+    expect(posted.some((p) => p.url.includes('/ack'))).toBe(false)
+    // wrong key, then the right one
+    await userEvent.type(screen.getByLabelText('Operator key'), 'nope')
+    await userEvent.click(screen.getByRole('button', { name: 'Unlock' }))
+    expect(await screen.findByText('That operator key is not correct.')).toBeInTheDocument()
+    await userEvent.clear(screen.getByLabelText('Operator key'))
+    await userEvent.type(screen.getByLabelText('Operator key'), 'right-key-123')
+    await userEvent.click(screen.getByRole('button', { name: 'Unlock' }))
+    expect(await screen.findByText('Operator actions unlocked')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /send email/i }))
+    expect(await screen.findByText(/Emailed 2 recipient\(s\)/)).toBeInTheDocument()
+    expect(posted.find((p) => p.url === '/api/alerts/det-1/notify')?.key).toBe('right-key-123')
+    await userEvent.click(screen.getByRole('button', { name: /acknowledge/i }))
+    expect(posted.some((p) => p.url === '/api/alerts/det-1/ack' && p.key === 'right-key-123')).toBe(true)
   })
 })
 

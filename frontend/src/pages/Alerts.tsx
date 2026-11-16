@@ -1,11 +1,11 @@
-import { AlertOctagon, AlertTriangle, BellRing, Check, Flame, Info, Mail, MapPin, Phone, Webhook } from 'lucide-react'
+import { AlertOctagon, AlertTriangle, BellRing, Check, Flame, Info, KeyRound, Lock, Mail, MapPin, Phone, Send, Webhook } from 'lucide-react'
 import { motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { NavBar } from '../components/NavBar'
 import { SourceStatus } from '../components/SourceStatus'
 import { ErrorState, Skeleton } from '../components/ui'
-import { apiPost, invalidate, useApi } from '../lib/api'
+import { ApiError, apiPost, useApi } from '../lib/api'
 import { fmtIst, timeAgo } from '../lib/format'
 import { fadeUp, stagger } from '../lib/motion'
 import type { AlertItem, AlertPriority, AlertsResponse } from '../lib/types'
@@ -18,6 +18,24 @@ const PRIORITY: Record<AlertPriority, { label: string; icon: typeof Info; chip: 
 }
 const WINDOWS = [24, 48, 168]
 const PAGE = 50
+const KEY_STORE = 'incendium.operatorKey'
+
+// The operator key lives only in this tab's sessionStorage and is sent as a header; it is never put in a URL.
+function readKey(): string {
+  try {
+    return sessionStorage.getItem(KEY_STORE) ?? ''
+  } catch {
+    return ''
+  }
+}
+function writeKey(k: string) {
+  try {
+    if (k) sessionStorage.setItem(KEY_STORE, k)
+    else sessionStorage.removeItem(KEY_STORE)
+  } catch {
+    /* storage unavailable: the key then lasts only until reload */
+  }
+}
 
 export default function Alerts() {
   const [minP, setMinP] = useState<AlertPriority>('medium')
@@ -29,6 +47,21 @@ export default function Alerts() {
   const path = `/api/alerts?hours=${hours}&min_priority=${minP}&include_acknowledged=${!openOnly}&compact=true&limit=${limit}`
   const { data, error, loading, refresh } = useApi<AlertsResponse>(path, { refreshMs: 60_000 })
   const remaining = data?.total !== undefined ? data.total - data.alerts.length : 0
+  const [opKey, setOpKey] = useState<string>(readKey)
+  const setKey = (k: string) => {
+    writeKey(k)
+    setOpKey(k)
+  }
+  // Run an operator action; a rejected key is forgotten so the panel asks again.
+  async function operator<T>(path: string): Promise<T> {
+    if (!opKey) throw new ApiError(401, 'operator_key_required', 'Unlock operator actions above (operator key) first.')
+    try {
+      return await apiPost<T>(path, undefined, undefined, { 'X-Operator-Key': opKey })
+    } catch (e) {
+      if (e instanceof ApiError && e.code === 'invalid_operator_key') setKey('')
+      throw e
+    }
+  }
 
   return (
     <div className="min-h-dvh bg-[#d9d4c7] text-graphite-900">
@@ -64,6 +97,8 @@ export default function Alerts() {
           </motion.div>
         )}
 
+        {data && <OperatorPanel enabled={data.operator_actions !== false} unlocked={!!opKey} onUnlock={setKey} />}
+
         <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center gap-3 text-[13px]">
           <div className="flex rounded-xl bg-graphite-900/8 p-0.5" role="radiogroup" aria-label="Minimum priority">
             {(['low', 'medium', 'high'] as const).map((p) => (
@@ -89,7 +124,22 @@ export default function Alerts() {
           {data && data.alerts.length === 0 && (
             <p className="rounded-xl bg-ivory/60 p-4 text-[14px]">No alerts match these filters. That does not mean there is no fire activity: check the Detections page.</p>
           )}
-          {data?.alerts.map((a) => <AlertCard key={a.id} a={a} onAck={async () => { await apiPost(`/api/alerts/${encodeURIComponent(a.id)}/ack`); invalidate('/api/alerts'); }} />)}
+          {data?.alerts.map((a) => (
+            <AlertCard
+              key={a.id}
+              a={a}
+              canEmail={data.channels.email}
+              onAck={async () => {
+                await operator(`/api/alerts/${encodeURIComponent(a.id)}/ack`)
+                await refresh() // refetch in place: keeps the cards mounted
+              }}
+              onEmail={async () => {
+                const r = await operator<{ recipients: number; status: string }>(`/api/alerts/${encodeURIComponent(a.id)}/notify`)
+                void refresh()
+                return r.status === 'test' ? `Test mode: written to the outbox for ${r.recipients} recipient(s)` : `Emailed ${r.recipients} recipient(s)`
+              }}
+            />
+          ))}
           {data && remaining > 0 && (
             <div className="flex items-center justify-center gap-3 pt-1 text-[13px]">
               <span className="text-graphite-600">Showing {data.alerts.length} of {data.total}</span>
@@ -112,10 +162,69 @@ export default function Alerts() {
   )
 }
 
-function AlertCard({ a, onAck }: { a: AlertItem; onAck: () => Promise<void> }) {
+function OperatorPanel({ enabled, unlocked, onUnlock }: { enabled: boolean; unlocked: boolean; onUnlock: (k: string) => void }) {
+  const [key, setKey] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  if (!enabled)
+    return (
+      <div className="mt-4 flex items-center gap-2 rounded-xl bg-ivory/60 p-3 text-[12.5px] text-graphite-700">
+        <Lock className="size-4" aria-hidden /> Acknowledging alerts and sending alert emails are switched off on this server (no operator key set).
+      </div>
+    )
+  if (unlocked)
+    return (
+      <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl bg-ivory/60 p-3 text-[12.5px]">
+        <KeyRound className="size-4 text-[#2f6b3a]" aria-hidden /> <b>Operator actions unlocked</b> for this browser tab: you can acknowledge alerts and email them to the configured recipients.
+        <button type="button" onClick={() => onUnlock('')} className="ml-auto rounded-lg border border-graphite-900/20 px-2.5 py-1 text-[12px] font-medium hover:bg-graphite-900/6">Lock</button>
+      </div>
+    )
+  async function unlock(e: FormEvent) {
+    e.preventDefault()
+    const k = key.trim()
+    if (!k) return
+    setBusy(true)
+    setErr(null)
+    try {
+      await apiPost('/api/operator/check', undefined, undefined, { 'X-Operator-Key': k })
+      onUnlock(k)
+      setKey('')
+    } catch (x) {
+      setErr((x as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <form onSubmit={unlock} className="mt-4 flex flex-wrap items-center gap-2 rounded-xl bg-ivory/60 p-3 text-[12.5px]">
+      <Lock className="size-4" aria-hidden />
+      <label htmlFor="op-key" className="font-medium">Operator key</label>
+      <span className="text-graphite-600">needed to acknowledge alerts or send them by email</span>
+      <input id="op-key" type="password" autoComplete="current-password" value={key} onChange={(e) => setKey(e.target.value)} className="min-w-[180px] flex-1 rounded-lg border border-graphite-900/20 bg-white/70 px-2.5 py-1 font-mono text-[12.5px]" />
+      <button type="submit" disabled={busy || !key.trim()} className="rounded-lg bg-graphite-800 px-3 py-1 text-[12px] font-medium text-ivory hover:bg-graphite-700 disabled:opacity-50">{busy ? 'Checking…' : 'Unlock'}</button>
+      {err && <span className="w-full text-[11.5px] text-[#8a1a1a]" role="alert">{err}</span>}
+    </form>
+  )
+}
+
+function AlertCard({ a, onAck, onEmail, canEmail }: { a: AlertItem; onAck: () => Promise<void>; onEmail: () => Promise<string>; canEmail: boolean }) {
   const P = PRIORITY[a.priority]
   const [acking, setAcking] = useState(false)
   const [ackError, setAckError] = useState<string | null>(null)
+  const [mailing, setMailing] = useState(false)
+  const [mailMsg, setMailMsg] = useState<string | null>(null)
+  async function sendEmail() {
+    setMailing(true)
+    setAckError(null)
+    setMailMsg(null)
+    try {
+      setMailMsg(await onEmail())
+    } catch (e) {
+      setAckError((e as Error).message)
+    } finally {
+      setMailing(false)
+    }
+  }
   return (
     <article className={`relative overflow-hidden rounded-xl border border-graphite-900/10 bg-ivory/70 p-4 pl-5 ${a.acknowledged_at ? 'opacity-70' : ''}`}>
       <span className="absolute inset-y-0 left-0 w-1.5" style={{ background: P.bar }} aria-hidden />
@@ -156,7 +265,17 @@ function AlertCard({ a, onAck }: { a: AlertItem; onAck: () => Promise<void> }) {
             <BellRing className="size-3.5" aria-hidden /> Acknowledge
           </button>
         )}
-        {a.notify_status && <span className="text-[11.5px] text-graphite-600">Notification: {a.notify_status}</span>}
+        <button
+          type="button"
+          disabled={mailing || !canEmail}
+          title={canEmail ? 'Email this alert now to the configured recipients' : 'Email is not configured on this server'}
+          onClick={sendEmail}
+          className="inline-flex items-center gap-1 rounded-lg border border-graphite-900/20 px-2.5 py-1.5 text-[12.5px] font-medium hover:bg-graphite-900/6 disabled:opacity-50"
+        >
+          <Send className="size-3.5" aria-hidden /> {mailing ? 'Sending…' : 'Send email'}
+        </button>
+        {a.notify_status && !mailMsg && <span className="text-[11.5px] text-graphite-600">Notification: {a.notify_status}</span>}
+        {mailMsg && <span className="text-[11.5px] text-[#2f6b3a]" role="status"><Check className="mr-0.5 inline size-3" aria-hidden />{mailMsg}</span>}
         {ackError && <span className="text-[11.5px] text-[#8a1a1a]" role="alert">{ackError}</span>}
       </div>
       <details className="mt-2 text-[12px] text-graphite-700">

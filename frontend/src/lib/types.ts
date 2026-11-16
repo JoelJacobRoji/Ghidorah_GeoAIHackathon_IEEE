@@ -427,6 +427,8 @@ export interface AlertsResponse {
   total?: number
   summary: Partial<Record<AlertPriority, { total: number; open: number }>>
   channels: { email: boolean; webhook: boolean; min_priority: AlertPriority; automatic_authority_contact: false }
+  /** True when the server has an operator key, so acknowledge / send email can be unlocked. */
+  operator_actions?: boolean
   rules: string
   disclaimer: string
   last_evaluation: { finished_at: string; status: string } | null
